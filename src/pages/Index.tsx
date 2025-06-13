@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus } from 'lucide-react';
+import { Plus, Star, Target, Trophy } from 'lucide-react';
 import Layout from '@/components/Layout';
 import TaskCard from '@/components/TaskCard';
 import TaskFilter from '@/components/TaskFilter';
@@ -37,7 +37,7 @@ const Index = () => {
     setTasks(loadTasks(user?.id));
 
     toast({
-      title: newStatus === 'complete' ? 'Task completed!' : 'Task marked incomplete',
+      title: newStatus === 'complete' ? '🎉 Task completed!' : '📝 Task marked incomplete',
       description: `"${task.name}" has been updated.`,
     });
   };
@@ -50,7 +50,7 @@ const Index = () => {
     setTasks(loadTasks(user?.id));
 
     toast({
-      title: 'Task deleted',
+      title: '🗑️ Task deleted',
       description: `"${task.name}" has been removed.`,
       variant: 'destructive',
     });
@@ -66,7 +66,7 @@ const Index = () => {
     setTasks(loadTasks(user?.id));
     
     toast({
-      title: 'Task updated!',
+      title: '✨ Task updated!',
       description: 'Your task has been successfully updated.',
     });
   };
@@ -108,23 +108,62 @@ const Index = () => {
     incomplete: tasks.filter(t => t.status === 'incomplete').length,
   };
 
+  const completionPercentage = tasks.length > 0 ? Math.round((taskCounts.complete / tasks.length) * 100) : 0;
+
   return (
     <Layout>
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Your Tasks</h1>
-            <p className="text-gray-600 mt-1">
-              Welcome back, {user?.name}! Manage your daily tasks efficiently
-            </p>
+      <div className="space-y-8">
+        {/* Header Section */}
+        <div className="text-center space-y-4">
+          <div className="flex justify-center">
+            <div className="relative">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                Welcome back, {user?.name}! 👋
+              </h1>
+              <div className="absolute -top-2 -right-2 w-4 h-4 bg-yellow-400 rounded-full animate-bounce"></div>
+            </div>
           </div>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Manage your daily tasks efficiently and stay productive ✨
+          </p>
           
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+            <div className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 backdrop-blur-sm rounded-2xl p-4 border border-blue-200/20">
+              <div className="flex items-center justify-center space-x-2">
+                <Target className="text-blue-500" size={24} />
+                <span className="text-2xl font-bold text-blue-600">{taskCounts.all}</span>
+              </div>
+              <p className="text-sm text-gray-600 mt-1">Total Tasks</p>
+            </div>
+            
+            <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 backdrop-blur-sm rounded-2xl p-4 border border-green-200/20">
+              <div className="flex items-center justify-center space-x-2">
+                <Trophy className="text-green-500" size={24} />
+                <span className="text-2xl font-bold text-green-600">{taskCounts.complete}</span>
+              </div>
+              <p className="text-sm text-gray-600 mt-1">Completed</p>
+            </div>
+            
+            <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-sm rounded-2xl p-4 border border-purple-200/20">
+              <div className="flex items-center justify-center space-x-2">
+                <Star className="text-purple-500" size={24} />
+                <span className="text-2xl font-bold text-purple-600">{completionPercentage}%</span>
+              </div>
+              <p className="text-sm text-gray-600 mt-1">Progress</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Button */}
+        <div className="flex justify-center">
           <Link
             to="/add-task"
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-medium"
           >
-            <Plus size={20} className="mr-2" />
-            Add New Task
+            <Plus size={24} className="mr-3 group-hover:rotate-90 transition-transform duration-300" />
+            Create New Task
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-700 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
           </Link>
         </div>
 
@@ -141,25 +180,25 @@ const Index = () => {
         />
 
         {filteredAndSortedTasks.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Plus size={24} className="text-gray-400" />
+          <div className="text-center py-16">
+            <div className="w-24 h-24 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <Plus size={32} className="text-gray-400" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {searchTerm ? 'No matching tasks found' : 
-               filter === 'all' ? 'No tasks yet' : `No ${filter} tasks`}
+            <h3 className="text-2xl font-bold text-gray-900 mb-3">
+              {searchTerm ? 'No matching tasks found 🔍' : 
+               filter === 'all' ? 'No tasks yet 📝' : `No ${filter} tasks 🎯`}
             </h3>
-            <p className="text-gray-500 mb-4">
+            <p className="text-gray-500 mb-6 max-w-md mx-auto text-lg">
               {searchTerm ? `No tasks match "${searchTerm}". Try a different search term.` :
                filter === 'all' 
-                ? "Get started by adding your first task!"
-                : `You don't have any ${filter} tasks right now.`
+                ? "Ready to get organized? Create your first task and start being productive!"
+                : `You don't have any ${filter} tasks right now. Keep up the good work!`
               }
             </p>
             {!searchTerm && filter === 'all' && (
               <Link
                 to="/add-task"
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl font-medium"
               >
                 <Plus size={20} className="mr-2" />
                 Add Your First Task
@@ -167,7 +206,7 @@ const Index = () => {
             )}
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {filteredAndSortedTasks.map(task => (
               <TaskCard
                 key={task.id}
