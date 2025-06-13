@@ -1,6 +1,8 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { User, LogOut } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -8,6 +10,7 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -21,28 +24,46 @@ const Layout = ({ children }: LayoutProps) => {
               <h1 className="text-xl font-bold text-gray-900">TaskFlow</h1>
             </Link>
             
-            <nav className="flex space-x-4">
-              <Link
-                to="/"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  location.pathname === '/'
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                Home
-              </Link>
-              <Link
-                to="/add-task"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  location.pathname === '/add-task'
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                Add Task
-              </Link>
-            </nav>
+            <div className="flex items-center space-x-4">
+              <nav className="flex space-x-4">
+                <Link
+                  to="/"
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    location.pathname === '/'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/add-task"
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    location.pathname === '/add-task'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  Add Task
+                </Link>
+              </nav>
+
+              {user && (
+                <div className="flex items-center space-x-3 border-l border-gray-200 pl-4">
+                  <div className="flex items-center space-x-2">
+                    <User size={16} className="text-gray-600" />
+                    <span className="text-sm text-gray-700">{user.name}</span>
+                  </div>
+                  <button
+                    onClick={logout}
+                    className="p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                    title="Logout"
+                  >
+                    <LogOut size={16} />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>

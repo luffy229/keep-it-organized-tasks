@@ -1,15 +1,16 @@
 
 import React from 'react';
-import { Check, Trash2 } from 'lucide-react';
+import { Check, Trash2, Edit } from 'lucide-react';
 import { Task } from '@/types/Task';
 
 interface TaskCardProps {
   task: Task;
   onToggleStatus: (id: string) => void;
   onDelete: (id: string) => void;
+  onEdit: (task: Task) => void;
 }
 
-const TaskCard = ({ task, onToggleStatus, onDelete }: TaskCardProps) => {
+const TaskCard = ({ task, onToggleStatus, onDelete, onEdit }: TaskCardProps) => {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between">
@@ -51,6 +52,13 @@ const TaskCard = ({ task, onToggleStatus, onDelete }: TaskCardProps) => {
           >
             {task.status === 'complete' ? 'Complete' : 'Incomplete'}
           </span>
+          
+          <button
+            onClick={() => onEdit(task)}
+            className="p-1 text-gray-400 hover:text-blue-500 transition-colors"
+          >
+            <Edit size={16} />
+          </button>
           
           <button
             onClick={() => onDelete(task.id)}

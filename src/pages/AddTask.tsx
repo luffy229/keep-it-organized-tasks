@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus } from 'lucide-react';
 import Layout from '@/components/Layout';
 import { addTask } from '@/utils/taskStorage';
+import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 const AddTask = () => {
@@ -11,6 +12,7 @@ const AddTask = () => {
   const [status, setStatus] = useState<'complete' | 'incomplete'>('incomplete');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -25,10 +27,19 @@ const AddTask = () => {
       return;
     }
 
+    if (!user) {
+      toast({
+        title: 'Error',
+        description: 'You must be logged in to create tasks.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const newTask = addTask(taskName);
+      const newTask = addTask(taskName, user.id);
       
       // Update status if it's different from default
       if (status === 'complete') {
