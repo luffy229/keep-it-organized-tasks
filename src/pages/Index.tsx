@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Sparkles, Trophy, Target } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import Layout from '@/components/Layout';
 import TaskCard from '@/components/TaskCard';
 import TaskFilter from '@/components/TaskFilter';
@@ -37,8 +37,8 @@ const Index = () => {
     setTasks(loadTasks(user?.id));
 
     toast({
-      title: newStatus === 'complete' ? '🎉 Task completed!' : '🔄 Task reopened',
-      description: `"${task.name}" has been ${newStatus === 'complete' ? 'completed' : 'marked incomplete'}.`,
+      title: newStatus === 'complete' ? 'Task completed!' : 'Task marked incomplete',
+      description: `"${task.name}" has been updated.`,
     });
   };
 
@@ -50,8 +50,8 @@ const Index = () => {
     setTasks(loadTasks(user?.id));
 
     toast({
-      title: '🗑️ Task deleted',
-      description: `"${task.name}" has been removed from your list.`,
+      title: 'Task deleted',
+      description: `"${task.name}" has been removed.`,
       variant: 'destructive',
     });
   };
@@ -66,7 +66,7 @@ const Index = () => {
     setTasks(loadTasks(user?.id));
     
     toast({
-      title: '✨ Task updated!',
+      title: 'Task updated!',
       description: 'Your task has been successfully updated.',
     });
   };
@@ -74,10 +74,14 @@ const Index = () => {
   // Filter and sort tasks
   const filteredAndSortedTasks = tasks
     .filter(task => {
+      // Filter by status
       if (filter !== 'all' && task.status !== filter) return false;
+      
+      // Filter by search term
       if (searchTerm && !task.name.toLowerCase().includes(searchTerm.toLowerCase())) {
         return false;
       }
+      
       return true;
     })
     .sort((a, b) => {
@@ -104,67 +108,23 @@ const Index = () => {
     incomplete: tasks.filter(t => t.status === 'incomplete').length,
   };
 
-  const completionRate = tasks.length > 0 ? Math.round((taskCounts.complete / tasks.length) * 100) : 0;
-
   return (
     <Layout>
-      <div className="space-y-8">
-        {/* Enhanced Header Section */}
-        <div className="relative">
-          <div className="text-center space-y-4">
-            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-100 to-purple-100 px-4 py-2 rounded-full">
-              <Sparkles size={20} className="text-blue-600" />
-              <span className="text-sm font-medium text-blue-700">Welcome back, {user?.name}!</span>
-            </div>
-            
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Your Task Universe
-            </h1>
-            
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Transform your productivity with beautifully organized tasks
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Your Tasks</h1>
+            <p className="text-gray-600 mt-1">
+              Welcome back, {user?.name}! Manage your daily tasks efficiently
             </p>
-
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 max-w-2xl mx-auto">
-              <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-4 shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-blue-100 text-sm">Total Tasks</p>
-                    <p className="text-2xl font-bold">{taskCounts.all}</p>
-                  </div>
-                  <Target size={32} className="text-blue-200" />
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl p-4 shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-green-100 text-sm">Completed</p>
-                    <p className="text-2xl font-bold">{taskCounts.complete}</p>
-                  </div>
-                  <Trophy size={32} className="text-green-200" />
-                </div>
-              </div>
-              
-              <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl p-4 shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-purple-100 text-sm">Completion</p>
-                    <p className="text-2xl font-bold">{completionRate}%</p>
-                  </div>
-                  <Sparkles size={32} className="text-purple-200" />
-                </div>
-              </div>
-            </div>
           </div>
           
           <Link
             to="/add-task"
-            className="fixed bottom-8 right-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full p-4 shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 z-50 group"
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
-            <Plus size={24} />
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <Plus size={20} className="mr-2" />
+            Add New Task
           </Link>
         </div>
 
@@ -180,54 +140,42 @@ const Index = () => {
           taskCounts={taskCounts}
         />
 
-        {/* Tasks Section */}
         {filteredAndSortedTasks.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="relative inline-block">
-              <div className="w-24 h-24 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
-                <Plus size={32} className="text-gray-400" />
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full blur opacity-20"></div>
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Plus size={24} className="text-gray-400" />
             </div>
-            
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
               {searchTerm ? 'No matching tasks found' : 
-               filter === 'all' ? 'Ready to start your journey?' : `No ${filter} tasks`}
+               filter === 'all' ? 'No tasks yet' : `No ${filter} tasks`}
             </h3>
-            
-            <p className="text-gray-500 mb-8 max-w-md mx-auto">
+            <p className="text-gray-500 mb-4">
               {searchTerm ? `No tasks match "${searchTerm}". Try a different search term.` :
                filter === 'all' 
-                ? "Create your first task and begin achieving your goals!"
+                ? "Get started by adding your first task!"
                 : `You don't have any ${filter} tasks right now.`
               }
             </p>
-            
             {!searchTerm && filter === 'all' && (
               <Link
                 to="/add-task"
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <Plus size={20} className="mr-2" />
-                Create Your First Task
+                Add Your First Task
               </Link>
             )}
           </div>
         ) : (
-          <div className="space-y-4">
-            {filteredAndSortedTasks.map((task, index) => (
-              <div 
-                key={task.id} 
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <TaskCard
-                  task={task}
-                  onToggleStatus={handleToggleStatus}
-                  onDelete={handleDelete}
-                  onEdit={handleEdit}
-                />
-              </div>
+          <div className="space-y-3">
+            {filteredAndSortedTasks.map(task => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                onToggleStatus={handleToggleStatus}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+              />
             ))}
           </div>
         )}
