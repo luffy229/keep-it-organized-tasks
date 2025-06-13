@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { User, Mail, Lock, Sparkles, ArrowRight } from 'lucide-react';
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -53,91 +54,130 @@ const AuthForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">TaskFlow</h1>
-          <p className="text-gray-600 mt-2">
-            {isLogin ? 'Sign in to your account' : 'Create your account'}
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-purple-100/40"></div>
+      
+      <div className="relative max-w-md w-full space-y-8">
+        <div className="text-center animate-fade-in">
+          <div className="flex items-center justify-center space-x-3 mb-6">
+            <div className="relative">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
+                <Sparkles size={32} className="text-white" />
+              </div>
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-pulse"></div>
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                TaskFlow
+              </h1>
+              <p className="text-sm text-gray-500">Stay Organized ✨</p>
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            {isLogin ? '👋 Welcome Back!' : '🎉 Join TaskFlow'}
+          </h2>
+          <p className="text-gray-600">
+            {isLogin ? 'Sign in to manage your tasks' : 'Create your account to get started'}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {!isLogin && (
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8 animate-scale-in">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {!isLogin && (
+              <div className="group">
+                <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                  👤 Full Name
+                </label>
+                <div className="relative">
+                  <User size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                  <input
+                    type="text"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full pl-12 pr-4 py-4 bg-white/70 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md"
+                    placeholder="Enter your full name"
+                    required={!isLogin}
+                    disabled={isLoading}
+                  />
+                </div>
+              </div>
+            )}
+            
+            <div className="group">
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                📧 Email Address
               </label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required={!isLogin}
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <Mail size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-12 pr-4 py-4 bg-white/70 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md"
+                  placeholder="Enter your email"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
+            
+            <div className="group">
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+                🔒 Password
+              </label>
+              <div className="relative">
+                <Lock size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-12 pr-4 py-4 bg-white/70 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md"
+                  placeholder="Enter your password"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-6 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl font-semibold flex items-center justify-center space-x-2 transform hover:scale-105"
+            >
+              {isLoading ? (
+                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  <span>{isLogin ? '🚀 Sign In' : '✨ Create Account'}</span>
+                  <ArrowRight size={20} />
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => setIsLogin(!isLogin)}
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors hover:underline"
+              disabled={isLoading}
+            >
+              {isLogin ? "Don't have an account? Sign up 📝" : "Already have an account? Sign in 👋"}
+            </button>
+          </div>
+
+          {isLogin && (
+            <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200">
+              <p className="text-sm text-gray-700 text-center">
+                <span className="font-semibold">🎯 Demo credentials:</span><br />
+                <span className="text-blue-600">📧 demo@example.com</span><br />
+                <span className="text-purple-600">🔑 password</span>
+              </p>
             </div>
           )}
-          
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              disabled={isLoading}
-            />
-          </div>
-          
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              disabled={isLoading}
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Sign Up')}
-          </button>
-        </form>
-
-        <div className="mt-4 text-center">
-          <button
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-blue-600 hover:text-blue-800 text-sm"
-            disabled={isLoading}
-          >
-            {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
-          </button>
         </div>
-
-        {isLogin && (
-          <div className="mt-4 p-3 bg-gray-50 rounded-md">
-            <p className="text-sm text-gray-600">
-              <strong>Demo credentials:</strong><br />
-              Email: demo@example.com<br />
-              Password: password
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
