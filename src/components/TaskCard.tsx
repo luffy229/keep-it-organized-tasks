@@ -12,14 +12,14 @@ interface TaskCardProps {
 
 const TaskCard = ({ task, onToggleStatus, onDelete, onEdit }: TaskCardProps) => {
   return (
-    <div className="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] hover:-translate-y-1 border border-white/20 relative overflow-hidden">
+    <div className="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] hover:-translate-y-1 border border-white/20 relative overflow-hidden">
       {/* Animated background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       
       {/* Completion celebration effect */}
       {task.status === 'complete' && (
-        <div className="absolute top-2 right-2 animate-bounce">
-          <Sparkles size={20} className="text-yellow-500" />
+        <div className="absolute top-4 right-4 animate-bounce">
+          <Sparkles size={24} className="text-yellow-500 animate-pulse" />
         </div>
       )}
       
@@ -27,7 +27,7 @@ const TaskCard = ({ task, onToggleStatus, onDelete, onEdit }: TaskCardProps) => 
         <div className="flex items-start space-x-4 flex-1">
           <button
             onClick={() => onToggleStatus(task.id)}
-            className={`w-7 h-7 mt-1 rounded-full border-2 flex items-center justify-center transition-all duration-500 transform hover:scale-110 ${
+            className={`w-8 h-8 mt-1 rounded-full border-2 flex items-center justify-center transition-all duration-300 transform hover:scale-110 ${
               task.status === 'complete' 
                 ? 'bg-gradient-to-r from-green-400 to-emerald-500 border-green-400 shadow-lg animate-pulse' 
                 : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'
@@ -35,14 +35,14 @@ const TaskCard = ({ task, onToggleStatus, onDelete, onEdit }: TaskCardProps) => 
             aria-label={task.status === 'complete' ? "Mark as incomplete" : "Mark as complete"}
           >
             {task.status === 'complete' && (
-              <Check size={16} className="text-white animate-scale-in" />
+              <Check size={18} className="text-white animate-scale-in" />
             )}
           </button>
           
           <div className="flex-1">
-            <h3 className={`text-lg font-semibold transition-all duration-300 ${
+            <h3 className={`text-lg font-semibold transition-all duration-500 ${
               task.status === 'complete' 
-                ? 'line-through text-gray-500 opacity-75' 
+                ? 'line-through text-gray-500 opacity-60 transform scale-95' 
                 : 'text-gray-800 group-hover:text-blue-600'
             }`}>
               {task.name}
@@ -65,7 +65,7 @@ const TaskCard = ({ task, onToggleStatus, onDelete, onEdit }: TaskCardProps) => 
           )}
           
           {task.status === 'complete' && (
-            <div className="px-4 py-2 rounded-full text-green-700 bg-gradient-to-r from-green-100 to-emerald-100 text-sm font-semibold ml-2 border border-green-200">
+            <div className="px-4 py-2 rounded-full text-green-700 bg-gradient-to-r from-green-100 to-emerald-100 text-sm font-semibold ml-2 border border-green-200 animate-fade-in">
               <div className="flex items-center">
                 <span className="mr-2">✅</span>
                 Complete
@@ -76,7 +76,7 @@ const TaskCard = ({ task, onToggleStatus, onDelete, onEdit }: TaskCardProps) => 
           <div className="flex space-x-1 ml-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-105">
             <button
               onClick={() => onEdit(task)}
-              className="p-3 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all duration-300 transform hover:scale-110 hover:rotate-3 shadow-sm hover:shadow-md"
+              className="p-3 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-xl transition-all duration-200 transform hover:scale-110 hover:rotate-3 shadow-sm hover:shadow-md"
               aria-label="Edit task"
             >
               <Edit size={18} />
@@ -84,7 +84,7 @@ const TaskCard = ({ task, onToggleStatus, onDelete, onEdit }: TaskCardProps) => 
             
             <button
               onClick={() => onDelete(task.id)}
-              className="p-3 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-300 transform hover:scale-110 hover:-rotate-3 shadow-sm hover:shadow-md"
+              className="p-3 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200 transform hover:scale-110 hover:-rotate-3 shadow-sm hover:shadow-md"
               aria-label="Delete task"
             >
               <Trash2 size={18} />
