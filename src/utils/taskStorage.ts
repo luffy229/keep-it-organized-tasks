@@ -75,6 +75,10 @@ export const loadTasks = (userId?: string): Task[] => {
   return tasks;
 };
 
+export const getUserTasks = (userId: string): Task[] => {
+  return loadTasks(userId);
+};
+
 export const addTask = (name: string, userId: string): Task => {
   const tasks = loadTasks();
   const newTask: Task = {
