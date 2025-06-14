@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -92,48 +91,48 @@ const AuthForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-2 xs:px-3 sm:px-4 md:px-6 lg:px-8 transition-all duration-300" style={getBackgroundStyle()}>
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 transition-all duration-300" style={getBackgroundStyle()}>
       <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-white/20 pointer-events-none"></div>
       
-      <div className="relative max-w-sm xs:max-w-md w-full space-y-4 xs:space-y-6 sm:space-y-8 mx-2">
+      <div className="relative max-w-md w-full space-y-8">
         <div className="text-center animate-fade-in">
-          <div className="flex items-center justify-center space-x-1.5 xs:space-x-2 sm:space-x-3 mb-3 xs:mb-4 sm:mb-6">
+          <div className="flex items-center justify-center space-x-3 mb-6">
             <div className="relative">
-              <div className="w-8 h-8 xs:w-12 xs:h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl xs:rounded-2xl flex items-center justify-center shadow-xl">
-                <Sparkles size={16} className="xs:w-6 xs:h-6 sm:w-8 sm:h-8 text-white" />
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
+                <Sparkles size={32} className="text-white" />
               </div>
-              <div className="absolute -top-0.5 xs:-top-1 sm:-top-2 -right-0.5 xs:-right-1 sm:-right-2 w-2.5 h-2.5 xs:w-4 xs:h-4 sm:w-6 sm:h-6 bg-yellow-400 rounded-full animate-pulse"></div>
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-pulse"></div>
             </div>
             <div>
-              <h1 className="text-lg xs:text-2xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 TaskFlow
               </h1>
-              <p className="text-xs sm:text-sm text-gray-500">Stay Organized ✨</p>
+              <p className="text-sm text-gray-500">Stay Organized ✨</p>
             </div>
           </div>
-          <h2 className="text-lg xs:text-xl sm:text-2xl font-bold text-gray-900 mb-1 xs:mb-2">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
             {isLogin ? '👋 Welcome Back!' : '🎉 Join TaskFlow'}
           </h2>
-          <p className="text-gray-600 text-xs xs:text-sm sm:text-base">
+          <p className="text-gray-600">
             {isLogin ? 'Sign in to manage your tasks' : 'Create your account to get started'}
           </p>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-md rounded-xl xs:rounded-2xl shadow-2xl border border-white/20 p-4 xs:p-6 sm:p-8 animate-scale-in">
-          <form onSubmit={handleSubmit} className="space-y-3 xs:space-y-4 sm:space-y-6">
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8 animate-scale-in">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {!isLogin && (
               <div className="group">
-                <label htmlFor="name" className="block text-xs xs:text-sm font-semibold text-gray-700 mb-1.5 xs:mb-2">
+                <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
                   👤 Full Name
                 </label>
                 <div className="relative">
-                  <User size={14} className="xs:w-4 xs:h-4 sm:w-5 sm:h-5 absolute left-2.5 xs:left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                  <User size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                   <input
                     type="text"
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-8 xs:pl-10 sm:pl-12 pr-2.5 xs:pr-3 sm:pr-4 py-2.5 xs:py-3 sm:py-4 bg-white/70 border border-gray-200 rounded-lg xs:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md text-xs xs:text-sm sm:text-base"
+                    className="w-full pl-12 pr-4 py-4 bg-white/70 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md"
                     placeholder="Enter your full name"
                     required={!isLogin}
                     disabled={isLoading}
@@ -143,17 +142,17 @@ const AuthForm = () => {
             )}
             
             <div className="group">
-              <label htmlFor="email" className="block text-xs xs:text-sm font-semibold text-gray-700 mb-1.5 xs:mb-2">
+              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
                 📧 Email Address
               </label>
               <div className="relative">
-                <Mail size={14} className="xs:w-4 xs:h-4 sm:w-5 sm:h-5 absolute left-2.5 xs:left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                <Mail size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                 <input
                   type="email"
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-8 xs:pl-10 sm:pl-12 pr-2.5 xs:pr-3 sm:pr-4 py-2.5 xs:py-3 sm:py-4 bg-white/70 border border-gray-200 rounded-lg xs:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md text-xs xs:text-sm sm:text-base"
+                  className="w-full pl-12 pr-4 py-4 bg-white/70 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md"
                   placeholder="Enter your email"
                   required
                   disabled={isLoading}
@@ -162,17 +161,17 @@ const AuthForm = () => {
             </div>
             
             <div className="group">
-              <label htmlFor="password" className="block text-xs xs:text-sm font-semibold text-gray-700 mb-1.5 xs:mb-2">
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
                 🔒 Password
               </label>
               <div className="relative">
-                <Lock size={14} className="xs:w-4 xs:h-4 sm:w-5 sm:h-5 absolute left-2.5 xs:left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                <Lock size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                 <input
                   type="password"
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-8 xs:pl-10 sm:pl-12 pr-2.5 xs:pr-3 sm:pr-4 py-2.5 xs:py-3 sm:py-4 bg-white/70 border border-gray-200 rounded-lg xs:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md text-xs xs:text-sm sm:text-base"
+                  className="w-full pl-12 pr-4 py-4 bg-white/70 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md"
                   placeholder="Enter your password"
                   required
                   disabled={isLoading}
@@ -183,23 +182,23 @@ const AuthForm = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2.5 xs:py-3 sm:py-4 px-3 xs:px-4 sm:px-6 rounded-lg xs:rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl font-semibold flex items-center justify-center space-x-1.5 xs:space-x-2 transform hover:scale-105 text-xs xs:text-sm sm:text-base"
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-6 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl font-semibold flex items-center justify-center space-x-2 transform hover:scale-105"
             >
               {isLoading ? (
-                <div className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
               ) : (
                 <>
                   <span>{isLogin ? '🚀 Sign In' : '✨ Create Account'}</span>
-                  <ArrowRight size={14} className="xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
+                  <ArrowRight size={20} />
                 </>
               )}
             </button>
           </form>
 
-          <div className="mt-3 xs:mt-4 sm:mt-6 text-center">
+          <div className="mt-6 text-center">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-blue-600 hover:text-blue-800 text-xs xs:text-sm font-medium transition-colors hover:underline"
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors hover:underline"
               disabled={isLoading}
             >
               {isLogin ? "Don't have an account? Sign up 📝" : "Already have an account? Sign in 👋"}
@@ -207,8 +206,8 @@ const AuthForm = () => {
           </div>
 
           {isLogin && (
-            <div className="mt-3 xs:mt-4 sm:mt-6 p-2.5 xs:p-3 sm:p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg xs:rounded-xl border border-blue-200">
-              <p className="text-xs sm:text-sm text-gray-700 text-center">
+            <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200">
+              <p className="text-sm text-gray-700 text-center">
                 <span className="font-semibold">🎯 Demo credentials:</span><br />
                 <span className="text-blue-600">📧 demo@example.com</span><br />
                 <span className="text-purple-600">🔑 password</span>
