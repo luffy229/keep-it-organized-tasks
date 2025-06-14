@@ -1,67 +1,91 @@
-
-import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { Plus, Sparkles } from 'lucide-react';
-import Layout from '@/components/Layout';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { getUserTasks, toggleTaskStatus, deleteTask, saveTask } from '@/utils/taskStorage';
+import { Task, TaskStatus, SortBy, SortOrder } from '@/types/Task';
 import TaskCard from '@/components/TaskCard';
 import TaskFilter from '@/components/TaskFilter';
 import TaskEditModal from '@/components/TaskEditModal';
-import { getUserTasks, updateTaskStatus, deleteTask, updateTask } from '@/utils/taskStorage';
-import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
-import { Task, TaskStatus, SortBy, SortOrder } from '@/types/Task';
+import { Plus, CheckCircle, Clock, List } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Index = () => {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const [filter, setFilter] = useState<TaskStatus>('all');
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [currentFilter, setCurrentFilter] = useState<TaskStatus>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<SortBy>('createdAt');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const { user } = useAuth();
 
-  const tasks = user ? getUserTasks(user.id) : [];
+  useEffect(() => {
+    if (user) {
+      loadTasks();
+    }
+  }, [user, currentFilter, searchTerm, sortBy, sortOrder]);
 
-  const filteredAndSortedTasks = useMemo(() => {
-    let filtered = tasks;
+  const loadTasks = () => {
+    let userTasks = getUserTasks(user!.id);
 
-    // Apply status filter
-    if (filter !== 'all') {
-      filtered = filtered.filter(task => task.status === filter);
+    // Apply filtering
+    if (currentFilter !== 'all') {
+      userTasks = userTasks.filter(task => task.status === currentFilter);
     }
 
-    // Apply search filter
+    // Apply search
     if (searchTerm) {
-      filtered = filtered.filter(task =>
+      userTasks = userTasks.filter(task =>
         task.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Apply sorting
-    filtered.sort((a, b) => {
-      let aValue: any = a[sortBy];
-      let bValue: any = b[sortBy];
+    userTasks.sort((a, b) => {
+      let comparison = 0;
 
-      if (sortBy === 'createdAt') {
-        aValue = a.createdAt.getTime();
-        bValue = b.createdAt.getTime();
+      if (sortBy === 'name') {
+        comparison = a.name.localeCompare(b.name);
       } else if (sortBy === 'status') {
-        aValue = a.status === 'complete' ? 1 : 0;
-        bValue = b.status === 'complete' ? 1 : 0;
-      } else {
-        aValue = aValue.toLowerCase();
-        bValue = bValue.toLowerCase();
+        if (a.status === 'complete' && b.status === 'incomplete') {
+          comparison = 1;
+        } else if (a.status === 'incomplete' && b.status === 'complete') {
+          comparison = -1;
+        }
+      } else if (sortBy === 'createdAt') {
+        comparison = a.createdAt.getTime() - b.createdAt.getTime();
       }
 
-      if (sortOrder === 'asc') {
-        return aValue > bValue ? 1 : -1;
-      } else {
-        return aValue < bValue ? 1 : -1;
-      }
+      return sortOrder === 'asc' ? comparison : -comparison;
     });
 
-    return filtered;
-  }, [tasks, filter, searchTerm, sortBy, sortOrder]);
+    setTasks(userTasks);
+  };
+
+  const handleToggleStatus = (id: string) => {
+    toggleTaskStatus(id);
+    loadTasks();
+  };
+
+  const handleDeleteTask = (id: string) => {
+    deleteTask(id);
+    loadTasks();
+  };
+
+  const handleEditTask = (task: Task) => {
+    setEditingTask(task);
+  };
+
+  const handleSaveTask = (taskId: string, name: string, status: 'complete' | 'incomplete') => {
+    if (editingTask) {
+      const updatedTask: Task = {
+        ...editingTask,
+        name: name,
+        status: status,
+      };
+      saveTask(updatedTask);
+      setEditingTask(null);
+      loadTasks();
+    }
+  };
 
   const taskCounts = {
     all: tasks.length,
@@ -69,66 +93,80 @@ const Index = () => {
     incomplete: tasks.filter(task => task.status === 'incomplete').length,
   };
 
-  const handleToggleStatus = (id: string) => {
-    const task = tasks.find(t => t.id === id);
-    if (task) {
-      const newStatus = task.status === 'complete' ? 'incomplete' : 'complete';
-      updateTaskStatus(id, newStatus);
-      toast({
-        title: newStatus === 'complete' ? '🎉 Task completed!' : '🔄 Task reopened',
-        description: `"${task.name}" has been marked as ${newStatus}.`,
-      });
-    }
-  };
-
-  const handleDelete = (id: string) => {
-    const task = tasks.find(t => t.id === id);
-    if (task) {
-      deleteTask(id);
-      toast({
-        title: '🗑️ Task deleted',
-        description: `"${task.name}" has been removed.`,
-      });
-    }
-  };
-
-  const handleEdit = (task: Task) => {
-    setEditingTask(task);
-  };
-
-  const handleSaveEdit = (taskId: string, name: string, status: 'complete' | 'incomplete') => {
-    updateTask(taskId, name, status);
-    toast({
-      title: '✨ Task updated!',
-      description: 'Your task has been successfully updated.',
-    });
-  };
+  const filteredTasks = tasks;
 
   if (!user) {
     return null;
   }
 
   return (
-    <Layout>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-8 sm:mb-12 animate-fade-in">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-xl mb-6">
-            <Sparkles size={32} className="text-white" />
-          </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-gray-800 via-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-            Your Tasks ✨
+    <div className="min-h-screen px-2 sm:px-4 md:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto py-4 sm:py-6 lg:py-8">
+        {/* Header Section */}
+        <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2 sm:mb-4">
+            ✨ Welcome back, {user.name}!
           </h1>
-          <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
-            Stay organized and productive with your personalized task management
+          <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto px-4">
+            Manage your tasks efficiently and stay organized
           </p>
         </div>
 
-        {/* Filter Section */}
-        <div className="mb-8 sm:mb-12">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
+          <div className="bg-white/70 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border border-white/20 p-4 sm:p-6 hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">Total Tasks</p>
+                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800">{taskCounts.all}</p>
+              </div>
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <List size={20} className="text-white" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white/70 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border border-white/20 p-4 sm:p-6 hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">Completed</p>
+                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600">{taskCounts.complete}</p>
+              </div>
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-green-400 to-emerald-500 rounded-xl flex items-center justify-center">
+                <CheckCircle size={20} className="text-white" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white/70 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border border-white/20 p-4 sm:p-6 hover:shadow-xl transition-all duration-300 sm:col-span-2 lg:col-span-1">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">Pending</p>
+                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-amber-600">{taskCounts.incomplete}</p>
+              </div>
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-amber-400 to-orange-500 rounded-xl flex items-center justify-center">
+                <Clock size={20} className="text-white" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Add Task Button */}
+        <div className="text-center mb-6 sm:mb-8">
+          <Link
+            to="/add-task"
+            className="inline-flex items-center px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl sm:rounded-2xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl font-semibold text-sm sm:text-base transform hover:scale-105"
+          >
+            <Plus size={18} className="mr-2" />
+            Add New Task
+          </Link>
+        </div>
+
+        {/* Task Management Section */}
+        <div className="bg-white/60 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border border-white/20 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
           <TaskFilter
-            currentFilter={filter}
-            onFilterChange={setFilter}
+            currentFilter={currentFilter}
+            onFilterChange={setCurrentFilter}
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
             sortBy={sortBy}
@@ -139,80 +177,49 @@ const Index = () => {
           />
         </div>
 
-        {/* Tasks Grid */}
-        <div className="space-y-6 sm:space-y-8 mb-8">
-          {filteredAndSortedTasks.length === 0 ? (
-            <div className="text-center py-12 sm:py-16 animate-fade-in">
-              <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-8 sm:p-12 max-w-lg mx-auto">
-                <div className="w-20 h-20 bg-gradient-to-r from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <span className="text-4xl">📝</span>
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4">
-                  {searchTerm ? 'No matching tasks found' : 'No tasks yet'}
-                </h3>
-                <p className="text-gray-600 mb-8">
-                  {searchTerm 
-                    ? `Try adjusting your search or filter criteria`
-                    : `Ready to get organized? Create your first task!`}
-                </p>
-                {!searchTerm && (
-                  <Link
-                    to="/add-task"
-                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl font-semibold transform hover:scale-105"
-                  >
-                    <Plus size={20} className="mr-2" />
-                    Create Your First Task
-                  </Link>
-                )}
+        {/* Tasks List */}
+        <div className="space-y-3 sm:space-y-4 lg:space-y-6">
+          {filteredTasks.length === 0 ? (
+            <div className="text-center py-8 sm:py-12 lg:py-16">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <List size={24} className="text-gray-500" />
               </div>
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">No tasks found</h3>
+              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 max-w-md mx-auto px-4">
+                {searchTerm ? 'Try adjusting your search criteria' : 'Start by adding your first task'}
+              </p>
+              {!searchTerm && (
+                <Link
+                  to="/add-task"
+                  className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg sm:rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl font-medium text-sm sm:text-base"
+                >
+                  <Plus size={16} className="mr-2" />
+                  Add Your First Task
+                </Link>
+              )}
             </div>
           ) : (
-            <div className="grid gap-4 sm:gap-6 lg:gap-8">
-              {filteredAndSortedTasks.map((task, index) => (
-                <div
-                  key={task.id}
-                  className="animate-slide-up"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <TaskCard
-                    task={task}
-                    onToggleStatus={handleToggleStatus}
-                    onDelete={handleDelete}
-                    onEdit={handleEdit}
-                  />
-                </div>
-              ))}
-            </div>
+            filteredTasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                onToggleStatus={handleToggleStatus}
+                onDelete={handleDeleteTask}
+                onEdit={handleEditTask}
+              />
+            ))
           )}
         </div>
 
-        {/* Floating Add Button for Mobile */}
-        <Link
-          to="/add-task"
-          className="fixed bottom-6 right-6 sm:hidden w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-110 z-50"
-        >
-          <Plus size={24} />
-        </Link>
-
-        {/* Desktop Add Button */}
-        <div className="hidden sm:flex justify-center mt-12">
-          <Link
-            to="/add-task"
-            className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl font-semibold text-lg transform hover:scale-105"
-          >
-            <Plus size={24} className="mr-3" />
-            Add New Task
-          </Link>
-        </div>
+        {/* Edit Modal */}
+        <TaskEditModal
+          task={editingTask}
+          isOpen={!!editingTask}
+          onClose={() => setEditingTask(null)}
+          onSave={handleSaveTask}
+        />
       </div>
-
-      <TaskEditModal
-        task={editingTask}
-        isOpen={!!editingTask}
-        onClose={() => setEditingTask(null)}
-        onSave={handleSaveEdit}
-      />
-    </Layout>
+    </div>
   );
 };
 
