@@ -242,8 +242,8 @@ const Index = () => {
         </div>
 
         {/* Tasks List with mobile-optimized spacing and narrower width on mobile */}
-        <div className="max-w-sm sm:max-w-full mx-auto">
-          <div className="space-y-3 sm:space-y-4">
+        <div className="max-w-xs sm:max-w-full mx-auto">
+          <div className="space-y-2 sm:space-y-3">
             {isLoading ? (
               <div className="text-center py-8 sm:py-12">
                 <div className="relative">
@@ -288,7 +288,7 @@ const Index = () => {
                 </div>
               </div>
             ) : (
-              <div className="grid gap-3 sm:gap-4">
+              <div className="grid gap-2 sm:gap-3">
                 {filteredAndSortedTasks.map((task, index) => (
                   <div
                     key={task.id}
