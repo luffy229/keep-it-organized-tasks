@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Sparkles, Target } from 'lucide-react';
 import Layout from '@/components/Layout';
-import { addTask } from '@/utils/taskStorage';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import * as api from '@/services/api';
 
 const AddTask = () => {
   const [taskName, setTaskName] = useState('');
@@ -39,12 +38,11 @@ const AddTask = () => {
     setIsSubmitting(true);
 
     try {
-      const newTask = addTask(taskName, user.id);
+      const newTask = await api.createTask(taskName);
       
       // Update status if it's different from default
       if (status === 'complete') {
-        const { updateTaskStatus } = await import('@/utils/taskStorage');
-        updateTaskStatus(newTask.id, 'complete');
+        await api.updateTaskStatus(newTask.id, 'complete');
       }
 
       toast({

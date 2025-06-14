@@ -1,15 +1,14 @@
-
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Sparkles } from 'lucide-react';
 import Layout from '@/components/Layout';
 import TaskCard from '@/components/TaskCard';
 import TaskFilter from '@/components/TaskFilter';
 import TaskEditModal from '@/components/TaskEditModal';
-import { getUserTasks, updateTaskStatus, deleteTask, updateTask } from '@/utils/taskStorage';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { Task, TaskStatus, SortBy, SortOrder } from '@/types/Task';
+import * as api from '@/services/api';
 
 const Index = () => {
   const { user } = useAuth();
@@ -19,8 +18,30 @@ const Index = () => {
   const [sortBy, setSortBy] = useState<SortBy>('createdAt');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const tasks = user ? getUserTasks(user.id) : [];
+  // Fetch tasks on component mount
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const fetchedTasks = await api.getTasks();
+        setTasks(fetchedTasks);
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: 'Failed to fetch tasks. Please try again.',
+          variant: 'destructive',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchTasks();
+    }
+  }, [user, toast]);
 
   const filteredAndSortedTasks = useMemo(() => {
     let filtered = tasks;
@@ -69,25 +90,43 @@ const Index = () => {
     incomplete: tasks.filter(task => task.status === 'incomplete').length,
   };
 
-  const handleToggleStatus = (id: string) => {
-    const task = tasks.find(t => t.id === id);
-    if (task) {
-      const newStatus = task.status === 'complete' ? 'incomplete' : 'complete';
-      updateTaskStatus(id, newStatus);
+  const handleToggleStatus = async (id: string) => {
+    try {
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        const newStatus = task.status === 'complete' ? 'incomplete' : 'complete';
+        const updatedTask = await api.updateTaskStatus(id, newStatus);
+        setTasks(tasks.map(t => t.id === id ? updatedTask : t));
+        toast({
+          title: newStatus === 'complete' ? '🎉 Task completed!' : '🔄 Task reopened',
+          description: `"${task.name}" has been marked as ${newStatus}.`,
+        });
+      }
+    } catch (error) {
       toast({
-        title: newStatus === 'complete' ? '🎉 Task completed!' : '🔄 Task reopened',
-        description: `"${task.name}" has been marked as ${newStatus}.`,
+        title: 'Error',
+        description: 'Failed to update task status. Please try again.',
+        variant: 'destructive',
       });
     }
   };
 
-  const handleDelete = (id: string) => {
-    const task = tasks.find(t => t.id === id);
-    if (task) {
-      deleteTask(id);
+  const handleDelete = async (id: string) => {
+    try {
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        await api.deleteTask(id);
+        setTasks(tasks.filter(t => t.id !== id));
+        toast({
+          title: '🗑️ Task deleted',
+          description: `"${task.name}" has been removed.`,
+        });
+      }
+    } catch (error) {
       toast({
-        title: '🗑️ Task deleted',
-        description: `"${task.name}" has been removed.`,
+        title: 'Error',
+        description: 'Failed to delete task. Please try again.',
+        variant: 'destructive',
       });
     }
   };
@@ -96,12 +135,21 @@ const Index = () => {
     setEditingTask(task);
   };
 
-  const handleSaveEdit = (taskId: string, name: string, status: 'complete' | 'incomplete') => {
-    updateTask(taskId, name, status);
-    toast({
-      title: '✨ Task updated!',
-      description: 'Your task has been successfully updated.',
-    });
+  const handleSaveEdit = async (taskId: string, name: string, status: 'complete' | 'incomplete') => {
+    try {
+      const updatedTask = await api.updateTask(taskId, name, status);
+      setTasks(tasks.map(t => t.id === taskId ? updatedTask : t));
+      toast({
+        title: '✨ Task updated!',
+        description: 'Your task has been successfully updated.',
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to update task. Please try again.',
+        variant: 'destructive',
+      });
+    }
   };
 
   if (!user) {
@@ -140,78 +188,38 @@ const Index = () => {
         </div>
 
         {/* Tasks Grid */}
-        <div className="space-y-6 sm:space-y-8 mb-8">
-          {filteredAndSortedTasks.length === 0 ? (
-            <div className="text-center py-12 sm:py-16 animate-fade-in">
-              <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-8 sm:p-12 max-w-lg mx-auto">
-                <div className="w-20 h-20 bg-gradient-to-r from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <span className="text-4xl">📝</span>
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4">
-                  {searchTerm ? 'No matching tasks found' : 'No tasks yet'}
-                </h3>
-                <p className="text-gray-600 mb-8">
-                  {searchTerm 
-                    ? `Try adjusting your search or filter criteria`
-                    : `Ready to get organized? Create your first task!`}
-                </p>
-                {!searchTerm && (
-                  <Link
-                    to="/add-task"
-                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl font-semibold transform hover:scale-105"
-                  >
-                    <Plus size={20} className="mr-2" />
-                    Create Your First Task
-                  </Link>
-                )}
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {isLoading ? (
+            <div className="col-span-full text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading tasks...</p>
+            </div>
+          ) : filteredAndSortedTasks.length === 0 ? (
+            <div className="col-span-full text-center py-12">
+              <p className="text-gray-600">No tasks found. Create your first task!</p>
             </div>
           ) : (
-            <div className="grid gap-4 sm:gap-6 lg:gap-8">
-              {filteredAndSortedTasks.map((task, index) => (
-                <div
-                  key={task.id}
-                  className="animate-slide-up"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <TaskCard
-                    task={task}
-                    onToggleStatus={handleToggleStatus}
-                    onDelete={handleDelete}
-                    onEdit={handleEdit}
-                  />
-                </div>
-              ))}
-            </div>
+            filteredAndSortedTasks.map(task => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                onToggleStatus={handleToggleStatus}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+              />
+            ))
           )}
-        </div>
-
-        {/* Floating Add Button for Mobile */}
-        <Link
-          to="/add-task"
-          className="fixed bottom-6 right-6 sm:hidden w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-110 z-50"
-        >
-          <Plus size={24} />
-        </Link>
-
-        {/* Desktop Add Button */}
-        <div className="hidden sm:flex justify-center mt-12">
-          <Link
-            to="/add-task"
-            className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl font-semibold text-lg transform hover:scale-105"
-          >
-            <Plus size={24} className="mr-3" />
-            Add New Task
-          </Link>
         </div>
       </div>
 
-      <TaskEditModal
-        task={editingTask}
-        isOpen={!!editingTask}
-        onClose={() => setEditingTask(null)}
-        onSave={handleSaveEdit}
-      />
+      {/* Edit Modal */}
+      {editingTask && (
+        <TaskEditModal
+          task={editingTask}
+          onClose={() => setEditingTask(null)}
+          onSave={handleSaveEdit}
+        />
+      )}
     </Layout>
   );
 };
