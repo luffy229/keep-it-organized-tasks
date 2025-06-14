@@ -115,3 +115,28 @@ export const deleteTask = (id: string): void => {
   const updatedTasks = tasks.filter(task => task.id !== id);
   saveTasks(updatedTasks);
 };
+
+// Add the missing exports that other files are trying to import
+export const saveTask = (task: Task): void => {
+  const tasks = loadTasks();
+  const existingTaskIndex = tasks.findIndex(t => t.id === task.id);
+  
+  if (existingTaskIndex >= 0) {
+    // Update existing task
+    tasks[existingTaskIndex] = task;
+  } else {
+    // Add new task
+    tasks.unshift(task);
+  }
+  
+  saveTasks(tasks);
+};
+
+export const toggleTaskStatus = (id: string): void => {
+  const tasks = loadTasks();
+  const task = tasks.find(t => t.id === id);
+  if (task) {
+    const newStatus = task.status === 'complete' ? 'incomplete' : 'complete';
+    updateTaskStatus(id, newStatus);
+  }
+};
