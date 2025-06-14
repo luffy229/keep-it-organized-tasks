@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { User, LogOut, Sparkles } from 'lucide-react';
+import { User, LogOut, Sparkles, Menu, X } from 'lucide-react';
 import Footer from './Footer';
 import ThemeSelector from './ThemeSelector';
 
@@ -16,12 +16,18 @@ const Layout = ({ children }: LayoutProps) => {
   const { user, logout } = useAuth();
   const { theme } = useTheme();
   const [scrollY, setScrollY] = useState(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location]);
 
   // Get theme-based gradient colors
   const getThemeGradient = () => {
@@ -89,22 +95,25 @@ const Layout = ({ children }: LayoutProps) => {
       <header className={`relative ${headerBg} backdrop-blur-md shadow-lg ${isDark ? 'border-gray-700/50' : 'border-white/20'} border-b sticky top-0 z-50`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
+            {/* Logo */}
             <Link to="/" className="flex items-center space-x-3 group">
               <div className="relative">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                  <Sparkles size={20} className="text-white" />
+                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                  <Sparkles size={16} className="lg:hidden text-white" />
+                  <Sparkles size={20} className="hidden lg:block text-white" />
                 </div>
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
+                <div className="absolute -top-1 -right-1 w-2 h-2 lg:w-3 lg:h-3 bg-yellow-400 rounded-full animate-pulse"></div>
               </div>
-              <div>
-                <h1 className={`text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent`}>
+              <div className="hidden sm:block">
+                <h1 className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   TaskFlow
                 </h1>
                 <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Stay Organized</p>
               </div>
             </Link>
-            
-            <div className="flex items-center space-x-6">
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center space-x-6">
               <nav className="flex space-x-1">
                 <Link
                   to="/"
@@ -148,11 +157,68 @@ const Layout = ({ children }: LayoutProps) => {
                 </div>
               )}
             </div>
+
+            {/* Mobile Controls */}
+            <div className="flex lg:hidden items-center space-x-3">
+              <ThemeSelector />
+              
+              {user && (
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className={`p-2 ${isDark ? 'text-gray-400 hover:text-white hover:bg-gray-800/60' : 'text-gray-600 hover:text-gray-900 hover:bg-white/60'} rounded-xl transition-all duration-200`}
+                  aria-label="Toggle menu"
+                >
+                  {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+              )}
+            </div>
           </div>
+
+          {/* Mobile Menu */}
+          {user && isMobileMenuOpen && (
+            <div className={`lg:hidden border-t ${isDark ? 'border-gray-700' : 'border-gray-200'} py-4 space-y-3`}>
+              <Link
+                to="/"
+                className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-300 ${
+                  location.pathname === '/'
+                    ? navItemActiveColor
+                    : navItemHoverColor
+                }`}
+              >
+                🏠 Home
+              </Link>
+              <Link
+                to="/add-task"
+                className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-300 ${
+                  location.pathname === '/add-task'
+                    ? navItemActiveColor
+                    : navItemHoverColor
+                }`}
+              >
+                ➕ Add Task
+              </Link>
+              
+              <div className={`flex items-center justify-between px-4 py-3 ${isDark ? 'bg-gray-800/60' : 'bg-white/60'} rounded-xl`}>
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
+                    <User size={16} className="text-white" />
+                  </div>
+                  <span className={`text-sm font-medium ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>{user.name}</span>
+                </div>
+                <button
+                  onClick={logout}
+                  className={`p-2 ${isDark ? 'text-gray-400 hover:text-red-400 hover:bg-red-900/20' : 'text-gray-600 hover:text-red-500 hover:bg-red-50'} rounded-xl transition-all duration-200`}
+                  title="Logout"
+                >
+                  <LogOut size={18} />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </header>
       
-      <main className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         {children}
       </main>
       
