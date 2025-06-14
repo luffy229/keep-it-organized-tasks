@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -228,61 +229,62 @@ const AuthForm = () => {
   const labelColor = isDark ? 'text-gray-200' : 'text-gray-700';
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 transition-all duration-300" style={getBackgroundStyle()}>
+    <div className="min-h-screen flex items-center justify-center px-3 sm:px-6 lg:px-8 py-6 transition-all duration-300" style={getBackgroundStyle()}>
       <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-br from-black/20 via-transparent to-black/10' : 'bg-gradient-to-br from-white/30 via-transparent to-white/20'} pointer-events-none`}></div>
       
-      <div className="absolute top-4 right-4 z-50">
+      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-50">
         <ThemeSelector />
       </div>
       
-      <div className="relative max-w-md w-full space-y-8">
+      <div className="relative w-full max-w-sm sm:max-w-md space-y-6 sm:space-y-8">
         <div className="text-center animate-fade-in">
-          <div className="flex items-center justify-center space-x-3 mb-6">
+          <div className="flex items-center justify-center space-x-2 sm:space-x-3 mb-4 sm:mb-6">
             <div className="relative">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
-                <Sparkles size={32} className="text-white" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-xl">
+                <Sparkles size={24} className="sm:hidden text-white" />
+                <Sparkles size={32} className="hidden sm:block text-white" />
               </div>
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-pulse"></div>
+              <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-4 h-4 sm:w-6 sm:h-6 bg-yellow-400 rounded-full animate-pulse"></div>
             </div>
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 TaskFlow
               </h1>
-              <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Stay Organized ✨</p>
+              <p className={`text-xs sm:text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Stay Organized ✨</p>
             </div>
           </div>
-          <h2 className={`text-2xl font-bold ${textColor} mb-2`}>
+          <h2 className={`text-xl sm:text-2xl font-bold ${textColor} mb-1 sm:mb-2`}>
             {isLogin ? '👋 Welcome Back!' : '🎉 Join TaskFlow'}
           </h2>
-          <p className={isDark ? 'text-gray-300' : 'text-gray-600'}>
+          <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} text-sm px-2`}>
             {isLogin ? 'Sign in to manage your tasks' : 'Create your account to get started'}
           </p>
         </div>
 
-        <div className={`${formBg} backdrop-blur-md rounded-2xl shadow-2xl ${isDark ? 'border-gray-700/50' : 'border-white/20'} border p-8 animate-scale-in`}>
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className={`${formBg} backdrop-blur-md rounded-xl sm:rounded-2xl shadow-2xl ${isDark ? 'border-gray-700/50' : 'border-white/20'} border p-4 sm:p-8 animate-scale-in`}>
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {!isLogin && (
               <div className="group">
                 <label htmlFor="name" className={`block text-sm font-semibold ${labelColor} mb-2`}>
                   👤 Full Name
                 </label>
                 <div className="relative">
-                  <User size={20} className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-gray-400 group-focus-within:text-blue-500'} transition-colors`} />
+                  <User size={18} className={`absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-gray-400 group-focus-within:text-blue-500'} transition-colors`} />
                   <input
                     type="text"
                     id="name"
                     value={name}
                     onChange={(e) => handleNameChange(e.target.value)}
-                    className={`w-full pl-12 pr-4 py-4 ${inputBg} border ${
+                    className={`w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 ${inputBg} border ${
                       errors.name ? 'border-red-500' : inputBorder
-                    } rounded-xl focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-blue-400/50 focus:border-blue-400/50' : 'focus:ring-blue-500/50 focus:border-blue-500/50'} transition-all duration-300 shadow-sm hover:shadow-md ${isDark ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'}`}
+                    } rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-blue-400/50 focus:border-blue-400/50' : 'focus:ring-blue-500/50 focus:border-blue-500/50'} transition-all duration-300 shadow-sm hover:shadow-md ${isDark ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'} text-sm sm:text-base`}
                     placeholder="Enter your full name"
                     required={!isLogin}
                     disabled={isLoading}
                   />
                 </div>
                 {errors.name && (
-                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                  <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.name}</p>
                 )}
               </div>
             )}
@@ -292,22 +294,22 @@ const AuthForm = () => {
                 📧 Email Address
               </label>
               <div className="relative">
-                <Mail size={20} className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-gray-400 group-focus-within:text-blue-500'} transition-colors`} />
+                <Mail size={18} className={`absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-gray-400 group-focus-within:text-blue-500'} transition-colors`} />
                 <input
                   type="email"
                   id="email"
                   value={email}
                   onChange={(e) => handleEmailChange(e.target.value)}
-                  className={`w-full pl-12 pr-4 py-4 ${inputBg} border ${
+                  className={`w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 ${inputBg} border ${
                     errors.email ? 'border-red-500' : inputBorder
-                  } rounded-xl focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-blue-400/50 focus:border-blue-400/50' : 'focus:ring-blue-500/50 focus:border-blue-500/50'} transition-all duration-300 shadow-sm hover:shadow-md ${isDark ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'}`}
+                  } rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-blue-400/50 focus:border-blue-400/50' : 'focus:ring-blue-500/50 focus:border-blue-500/50'} transition-all duration-300 shadow-sm hover:shadow-md ${isDark ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'} text-sm sm:text-base`}
                   placeholder="Enter your email"
                   required
                   disabled={isLoading}
                 />
               </div>
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.email}</p>
               )}
             </div>
             
@@ -316,15 +318,15 @@ const AuthForm = () => {
                 🔒 Password
               </label>
               <div className="relative">
-                <Lock size={20} className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-gray-400 group-focus-within:text-blue-500'} transition-colors`} />
+                <Lock size={18} className={`absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-gray-400 group-focus-within:text-blue-500'} transition-colors`} />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   id="password"
                   value={password}
                   onChange={(e) => handlePasswordChange(e.target.value)}
-                  className={`w-full pl-12 pr-12 py-4 ${inputBg} border ${
+                  className={`w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-4 ${inputBg} border ${
                     errors.password ? 'border-red-500' : inputBorder
-                  } rounded-xl focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-blue-400/50 focus:border-blue-400/50' : 'focus:ring-blue-500/50 focus:border-blue-500/50'} transition-all duration-300 shadow-sm hover:shadow-md ${isDark ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'}`}
+                  } rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-blue-400/50 focus:border-blue-400/50' : 'focus:ring-blue-500/50 focus:border-blue-500/50'} transition-all duration-300 shadow-sm hover:shadow-md ${isDark ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'} text-sm sm:text-base`}
                   placeholder="Enter your password"
                   required
                   disabled={isLoading}
@@ -332,19 +334,19 @@ const AuthForm = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 hover:text-blue-400' : 'text-gray-400 hover:text-blue-500'} transition-colors`}
+                  className={`absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 hover:text-blue-400' : 'text-gray-400 hover:text-blue-500'} transition-colors`}
                   disabled={isLoading}
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
               {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.password}</p>
               )}
               {!isLogin && !errors.password && (
                 <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} mt-2 space-y-1`}>
                   <p>Password requirements:</p>
-                  <ul className="list-disc list-inside space-y-1">
+                  <ul className="list-disc list-inside space-y-1 text-xs">
                     <li>At least 8 characters long</li>
                     <li>One uppercase letter (A-Z)</li>
                     <li>One lowercase letter (a-z)</li>
@@ -355,29 +357,31 @@ const AuthForm = () => {
               )}
             </div>
 
-            <button
-              type="submit"
-              disabled={isLoading || Object.values(errors).some(error => error !== null)}
-              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-6 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl font-semibold flex items-center justify-center space-x-2 transform hover:scale-105"
-            >
-              {isLoading ? (
-                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              ) : (
-                <>
-                  <span>{isLogin ? '🚀 Sign In' : '✨ Create Account'}</span>
-                  <ArrowRight size={20} />
-                </>
-              )}
-            </button>
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={isLoading || Object.values(errors).some(error => error !== null)}
+                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg sm:rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl font-semibold flex items-center justify-center space-x-2 transform hover:scale-105 text-sm sm:text-base"
+              >
+                {isLoading ? (
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                ) : (
+                  <>
+                    <span>{isLogin ? '🚀 Sign In' : '✨ Create Account'}</span>
+                    <ArrowRight size={18} className="sm:size-5" />
+                  </>
+                )}
+              </button>
+            </div>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-4 sm:mt-6 text-center">
             <button
               onClick={() => {
                 setIsLogin(!isLogin);
                 setErrors({});
               }}
-              className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors hover:underline"
+              className="text-blue-600 hover:text-blue-800 text-xs sm:text-sm font-medium transition-colors hover:underline"
               disabled={isLoading}
             >
               {isLogin ? "Don't have an account? Sign up 📝" : "Already have an account? Sign in 👋"}
