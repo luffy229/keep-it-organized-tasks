@@ -2,13 +2,19 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { User, Mail, Lock, Sparkles, ArrowRight } from 'lucide-react';
+import { User, Mail, Lock, Sparkles, ArrowRight, Eye, EyeOff } from 'lucide-react';
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<{
+    email?: string;
+    password?: string;
+    name?: string;
+  }>({});
   const [scrollY, setScrollY] = useState(0);
   const { login, register, isLoading } = useAuth();
   const { toast } = useToast();
@@ -18,6 +24,84 @@ const AuthForm = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Email validation
+  const validateEmail = (email: string): string | null => {
+    if (!email) return 'Email is required';
+    
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      return 'Please enter a valid email address';
+    }
+    
+    // Check for Gmail format specifically
+    if (email.includes('@gmail.com') && !email.match(/^[a-zA-Z0-9._%+-]+@gmail\.com$/)) {
+      return 'Please enter a valid Gmail address';
+    }
+    
+    return null;
+  };
+
+  // Password validation
+  const validatePassword = (password: string): string | null => {
+    if (!password) return 'Password is required';
+    
+    if (password.length < 8) {
+      return 'Password must be at least 8 characters long';
+    }
+    
+    if (!/(?=.*[a-z])/.test(password)) {
+      return 'Password must contain at least one lowercase letter';
+    }
+    
+    if (!/(?=.*[A-Z])/.test(password)) {
+      return 'Password must contain at least one uppercase letter';
+    }
+    
+    if (!/(?=.*\d)/.test(password)) {
+      return 'Password must contain at least one number';
+    }
+    
+    if (!/(?=.*[@$!%*?&])/.test(password)) {
+      return 'Password must contain at least one special character (@$!%*?&)';
+    }
+    
+    return null;
+  };
+
+  // Name validation
+  const validateName = (name: string): string | null => {
+    if (!name) return 'Name is required';
+    
+    if (name.length < 2) {
+      return 'Name must be at least 2 characters long';
+    }
+    
+    if (!/^[a-zA-Z\s]+$/.test(name)) {
+      return 'Name can only contain letters and spaces';
+    }
+    
+    return null;
+  };
+
+  // Real-time validation
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    const error = validateEmail(value);
+    setErrors(prev => ({ ...prev, email: error }));
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    const error = validatePassword(value);
+    setErrors(prev => ({ ...prev, password: error }));
+  };
+
+  const handleNameChange = (value: string) => {
+    setName(value);
+    const error = validateName(value);
+    setErrors(prev => ({ ...prev, name: error }));
+  };
 
   // Calculate gradient based on scroll position
   const getBackgroundStyle = () => {
@@ -52,6 +136,27 @@ const AuthForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate all fields
+    const emailError = validateEmail(email);
+    const passwordError = validatePassword(password);
+    const nameError = !isLogin ? validateName(name) : null;
+    
+    setErrors({
+      email: emailError,
+      password: passwordError,
+      name: nameError
+    });
+    
+    // If there are errors, don't submit
+    if (emailError || passwordError || nameError) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please fix the errors below',
+        variant: 'destructive',
+      });
+      return;
+    }
     
     try {
       let success = false;
@@ -132,13 +237,18 @@ const AuthForm = () => {
                     type="text"
                     id="name"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-12 pr-4 py-4 bg-white/70 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md"
+                    onChange={(e) => handleNameChange(e.target.value)}
+                    className={`w-full pl-12 pr-4 py-4 bg-white/70 border ${
+                      errors.name ? 'border-red-500' : 'border-gray-200'
+                    } rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md`}
                     placeholder="Enter your full name"
                     required={!isLogin}
                     disabled={isLoading}
                   />
                 </div>
+                {errors.name && (
+                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                )}
               </div>
             )}
             
@@ -152,13 +262,18 @@ const AuthForm = () => {
                   type="email"
                   id="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-white/70 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md"
+                  onChange={(e) => handleEmailChange(e.target.value)}
+                  className={`w-full pl-12 pr-4 py-4 bg-white/70 border ${
+                    errors.email ? 'border-red-500' : 'border-gray-200'
+                  } rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md`}
                   placeholder="Enter your email"
                   required
                   disabled={isLoading}
                 />
               </div>
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
             
             <div className="group">
@@ -168,21 +283,46 @@ const AuthForm = () => {
               <div className="relative">
                 <Lock size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   id="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-white/70 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md"
+                  onChange={(e) => handlePasswordChange(e.target.value)}
+                  className={`w-full pl-12 pr-12 py-4 bg-white/70 border ${
+                    errors.password ? 'border-red-500' : 'border-gray-200'
+                  } rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md`}
                   placeholder="Enter your password"
                   required
                   disabled={isLoading}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition-colors"
+                  disabled={isLoading}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
+              {!isLogin && !errors.password && (
+                <div className="text-xs text-gray-500 mt-2 space-y-1">
+                  <p>Password requirements:</p>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li>At least 8 characters long</li>
+                    <li>One uppercase letter (A-Z)</li>
+                    <li>One lowercase letter (a-z)</li>
+                    <li>One number (0-9)</li>
+                    <li>One special character (@$!%*?&)</li>
+                  </ul>
+                </div>
+              )}
             </div>
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || Object.values(errors).some(error => error !== null)}
               className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-6 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl font-semibold flex items-center justify-center space-x-2 transform hover:scale-105"
             >
               {isLoading ? (
@@ -198,7 +338,10 @@ const AuthForm = () => {
 
           <div className="mt-6 text-center">
             <button
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => {
+                setIsLogin(!isLogin);
+                setErrors({});
+              }}
               className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors hover:underline"
               disabled={isLoading}
             >
