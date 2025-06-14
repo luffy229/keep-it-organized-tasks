@@ -24,7 +24,7 @@ const TaskCard = ({ task, onToggleStatus, onDelete, onEdit }: TaskCardProps) => 
         <div className="flex items-start space-x-4 flex-1">
           <button
             onClick={() => onToggleStatus(task.id)}
-            className={`w-8 h-8 mt-1 rounded-full border-2 flex items-center justify-center transition-colors duration-200 ${
+            className={`w-8 h-8 mt-1 rounded-full border-2 flex items-center justify-center ${
               task.status === 'complete' 
                 ? 'bg-gradient-to-r from-green-400 to-emerald-500 border-green-400' 
                 : 'border-gray-300'
@@ -37,7 +37,7 @@ const TaskCard = ({ task, onToggleStatus, onDelete, onEdit }: TaskCardProps) => 
           </button>
           
           <div className="flex-1">
-            <h3 className={`text-lg font-semibold transition-all duration-300 ${
+            <h3 className={`text-lg font-semibold ${
               task.status === 'complete' 
                 ? 'line-through text-gray-500 opacity-60' 
                 : 'text-gray-800'
@@ -73,7 +73,7 @@ const TaskCard = ({ task, onToggleStatus, onDelete, onEdit }: TaskCardProps) => 
           <div className="flex space-x-1 ml-3">
             <button
               onClick={() => onEdit(task)}
-              className="p-3 text-gray-400 hover:text-blue-500 rounded-xl transition-colors duration-200"
+              className="p-3 text-gray-400 rounded-xl"
               aria-label="Edit task"
             >
               <Edit size={18} />
@@ -81,7 +81,7 @@ const TaskCard = ({ task, onToggleStatus, onDelete, onEdit }: TaskCardProps) => 
             
             <button
               onClick={() => onDelete(task.id)}
-              className="p-3 text-gray-400 hover:text-red-500 rounded-xl transition-colors duration-200"
+              className="p-3 text-gray-400 rounded-xl"
               aria-label="Delete task"
             >
               <Trash2 size={18} />
