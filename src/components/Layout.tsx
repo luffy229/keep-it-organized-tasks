@@ -1,8 +1,11 @@
+
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { User, LogOut, Sparkles } from 'lucide-react';
 import Footer from './Footer';
+import ThemeSelector from './ThemeSelector';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,6 +14,7 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { theme } = useTheme();
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -19,29 +23,50 @@ const Layout = ({ children }: LayoutProps) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Calculate gradient based on scroll position
-  const getBackgroundStyle = () => {
-    const maxScroll = 1000; // Adjust this value to control when the gradient fully transitions
+  // Get theme-based gradient colors
+  const getThemeGradient = () => {
+    const maxScroll = 1000;
     const scrollProgress = Math.min(scrollY / maxScroll, 1);
     
-    // Define gradient colors based on scroll position
-    const startColor1 = [199, 210, 254]; // indigo-200
-    const startColor2 = [255, 255, 255]; // white
-    const startColor3 = [243, 232, 255]; // purple-100
+    let startColors: [number, number, number][];
+    let endColors: [number, number, number][];
     
-    const endColor1 = [147, 197, 253]; // blue-300
-    const endColor2 = [196, 181, 253]; // purple-300
-    const endColor3 = [252, 165, 165]; // red-300
+    switch (theme) {
+      case 'dark':
+        startColors = [[31, 41, 55], [17, 24, 39], [55, 65, 81]]; // gray-800, gray-900, gray-700
+        endColors = [[17, 24, 39], [31, 41, 55], [75, 85, 99]]; // gray-900, gray-800, gray-600
+        break;
+      case 'ocean':
+        startColors = [[103, 232, 249], [59, 130, 246], [14, 165, 233]]; // cyan-300, blue-500, sky-500
+        endColors = [[6, 182, 212], [2, 132, 199], [3, 105, 161]]; // cyan-500, blue-600, sky-700
+        break;
+      case 'sunset':
+        startColors = [[251, 146, 60], [236, 72, 153], [245, 101, 101]]; // orange-400, pink-500, red-400
+        endColors = [[234, 88, 12], [219, 39, 119], [220, 38, 127]]; // orange-600, pink-600, pink-600
+        break;
+      case 'forest':
+        startColors = [[74, 222, 128], [34, 197, 94], [132, 204, 22]]; // green-400, green-500, lime-500
+        endColors = [[22, 163, 74], [21, 128, 61], [101, 163, 13]]; // green-600, green-700, lime-600
+        break;
+      case 'royal':
+        startColors = [[168, 85, 247], [99, 102, 241], [139, 92, 246]]; // purple-500, indigo-500, violet-500
+        endColors = [[126, 34, 206], [67, 56, 202], [109, 40, 217]]; // purple-700, indigo-700, violet-700
+        break;
+      default: // light
+        startColors = [[199, 210, 254], [255, 255, 255], [243, 232, 255]]; // indigo-200, white, purple-100
+        endColors = [[147, 197, 253], [196, 181, 253], [252, 165, 165]]; // blue-300, purple-300, red-300
+        break;
+    }
     
-    const interpolateColor = (start: number[], end: number[], progress: number) => {
+    const interpolateColor = (start: [number, number, number], end: [number, number, number], progress: number) => {
       return start.map((startVal, i) => 
         Math.round(startVal + (end[i] - startVal) * progress)
       );
     };
     
-    const color1 = interpolateColor(startColor1, endColor1, scrollProgress);
-    const color2 = interpolateColor(startColor2, endColor2, scrollProgress);
-    const color3 = interpolateColor(startColor3, endColor3, scrollProgress);
+    const color1 = interpolateColor(startColors[0], endColors[0], scrollProgress);
+    const color2 = interpolateColor(startColors[1], endColors[1], scrollProgress);
+    const color3 = interpolateColor(startColors[2], endColors[2], scrollProgress);
     
     return {
       background: `linear-gradient(135deg, 
@@ -51,11 +76,17 @@ const Layout = ({ children }: LayoutProps) => {
     };
   };
 
+  const isDark = theme === 'dark';
+  const textColor = isDark ? 'text-white' : 'text-gray-900';
+  const headerBg = isDark ? 'bg-gray-900/80' : 'bg-white/80';
+  const navItemActiveColor = isDark ? 'bg-gray-700 text-blue-300' : 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700';
+  const navItemHoverColor = isDark ? 'text-gray-300 hover:text-white hover:bg-gray-800/60' : 'text-gray-600 hover:text-gray-900 hover:bg-white/60';
+
   return (
-    <div className="min-h-screen transition-all duration-300" style={getBackgroundStyle()}>
-      <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-white/20 pointer-events-none"></div>
+    <div className="min-h-screen transition-all duration-300" style={getThemeGradient()}>
+      <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-br from-black/20 via-transparent to-black/10' : 'bg-gradient-to-br from-white/30 via-transparent to-white/20'} pointer-events-none`}></div>
       
-      <header className="relative bg-white/80 backdrop-blur-md shadow-lg border-b border-white/20 sticky top-0 z-50">
+      <header className={`relative ${headerBg} backdrop-blur-md shadow-lg ${isDark ? 'border-gray-700/50' : 'border-white/20'} border-b sticky top-0 z-50`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center space-x-3 group">
@@ -66,10 +97,10 @@ const Layout = ({ children }: LayoutProps) => {
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
               </div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <h1 className={`text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent`}>
                   TaskFlow
                 </h1>
-                <p className="text-xs text-gray-500">Stay Organized</p>
+                <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Stay Organized</p>
               </div>
             </Link>
             
@@ -79,8 +110,8 @@ const Layout = ({ children }: LayoutProps) => {
                   to="/"
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
                     location.pathname === '/'
-                      ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-md'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-white/60 hover:shadow-sm'
+                      ? navItemActiveColor + ' shadow-md'
+                      : navItemHoverColor + ' hover:shadow-sm'
                   }`}
                 >
                   🏠 Home
@@ -89,25 +120,27 @@ const Layout = ({ children }: LayoutProps) => {
                   to="/add-task"
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
                     location.pathname === '/add-task'
-                      ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-md'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-white/60 hover:shadow-sm'
+                      ? navItemActiveColor + ' shadow-md'
+                      : navItemHoverColor + ' hover:shadow-sm'
                   }`}
                 >
                   ➕ Add Task
                 </Link>
               </nav>
 
+              <ThemeSelector />
+
               {user && (
-                <div className="flex items-center space-x-4 border-l border-gray-200 pl-6">
-                  <div className="flex items-center space-x-3 bg-white/60 rounded-xl px-4 py-2 shadow-sm">
+                <div className={`flex items-center space-x-4 border-l ${isDark ? 'border-gray-600' : 'border-gray-200'} pl-6`}>
+                  <div className={`flex items-center space-x-3 ${isDark ? 'bg-gray-800/60' : 'bg-white/60'} rounded-xl px-4 py-2 shadow-sm`}>
                     <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
                       <User size={16} className="text-white" />
                     </div>
-                    <span className="text-sm font-medium text-gray-700">{user.name}</span>
+                    <span className={`text-sm font-medium ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>{user.name}</span>
                   </div>
                   <button
                     onClick={logout}
-                    className="p-2 text-gray-600 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200 hover:scale-110"
+                    className={`p-2 ${isDark ? 'text-gray-400 hover:text-red-400 hover:bg-red-900/20' : 'text-gray-600 hover:text-red-500 hover:bg-red-50'} rounded-xl transition-all duration-200 hover:scale-110`}
                     title="Logout"
                   >
                     <LogOut size={18} />

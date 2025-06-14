@@ -1,8 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useToast } from '@/hooks/use-toast';
 import { User, Mail, Lock, Sparkles, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import ThemeSelector from './ThemeSelector';
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -17,6 +18,7 @@ const AuthForm = () => {
   }>({});
   const [scrollY, setScrollY] = useState(0);
   const { login, register, isLoading } = useAuth();
+  const { theme } = useTheme();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -103,28 +105,50 @@ const AuthForm = () => {
     setErrors(prev => ({ ...prev, name: error }));
   };
 
-  // Calculate gradient based on scroll position
+  // Get theme-based gradient colors
   const getBackgroundStyle = () => {
     const maxScroll = 800;
     const scrollProgress = Math.min(scrollY / maxScroll, 1);
     
-    const startColor1 = [199, 210, 254]; // indigo-200
-    const startColor2 = [255, 255, 255]; // white
-    const startColor3 = [243, 232, 255]; // purple-100
+    let startColors: [number, number, number][];
+    let endColors: [number, number, number][];
     
-    const endColor1 = [147, 197, 253]; // blue-300
-    const endColor2 = [196, 181, 253]; // purple-300
-    const endColor3 = [252, 165, 165]; // red-300
+    switch (theme) {
+      case 'dark':
+        startColors = [[31, 41, 55], [17, 24, 39], [55, 65, 81]];
+        endColors = [[17, 24, 39], [31, 41, 55], [75, 85, 99]];
+        break;
+      case 'ocean':
+        startColors = [[103, 232, 249], [59, 130, 246], [14, 165, 233]];
+        endColors = [[6, 182, 212], [2, 132, 199], [3, 105, 161]];
+        break;
+      case 'sunset':
+        startColors = [[251, 146, 60], [236, 72, 153], [245, 101, 101]];
+        endColors = [[234, 88, 12], [219, 39, 119], [220, 38, 127]];
+        break;
+      case 'forest':
+        startColors = [[74, 222, 128], [34, 197, 94], [132, 204, 22]];
+        endColors = [[22, 163, 74], [21, 128, 61], [101, 163, 13]];
+        break;
+      case 'royal':
+        startColors = [[168, 85, 247], [99, 102, 241], [139, 92, 246]];
+        endColors = [[126, 34, 206], [67, 56, 202], [109, 40, 217]];
+        break;
+      default: // light
+        startColors = [[199, 210, 254], [255, 255, 255], [243, 232, 255]];
+        endColors = [[147, 197, 253], [196, 181, 253], [252, 165, 165]];
+        break;
+    }
     
-    const interpolateColor = (start: number[], end: number[], progress: number) => {
+    const interpolateColor = (start: [number, number, number], end: [number, number, number], progress: number) => {
       return start.map((startVal, i) => 
         Math.round(startVal + (end[i] - startVal) * progress)
       );
     };
     
-    const color1 = interpolateColor(startColor1, endColor1, scrollProgress);
-    const color2 = interpolateColor(startColor2, endColor2, scrollProgress);
-    const color3 = interpolateColor(startColor3, endColor3, scrollProgress);
+    const color1 = interpolateColor(startColors[0], endColors[0], scrollProgress);
+    const color2 = interpolateColor(startColors[1], endColors[1], scrollProgress);
+    const color3 = interpolateColor(startColors[2], endColors[2], scrollProgress);
     
     return {
       background: `linear-gradient(135deg, 
@@ -196,9 +220,20 @@ const AuthForm = () => {
     }
   };
 
+  const isDark = theme === 'dark';
+  const textColor = isDark ? 'text-white' : 'text-gray-900';
+  const formBg = isDark ? 'bg-gray-900/80' : 'bg-white/80';
+  const inputBg = isDark ? 'bg-gray-800/70' : 'bg-white/70';
+  const inputBorder = isDark ? 'border-gray-600' : 'border-gray-200';
+  const labelColor = isDark ? 'text-gray-200' : 'text-gray-700';
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 transition-all duration-300" style={getBackgroundStyle()}>
-      <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-white/20 pointer-events-none"></div>
+      <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-br from-black/20 via-transparent to-black/10' : 'bg-gradient-to-br from-white/30 via-transparent to-white/20'} pointer-events-none`}></div>
+      
+      <div className="absolute top-4 right-4 z-50">
+        <ThemeSelector />
+      </div>
       
       <div className="relative max-w-md w-full space-y-8">
         <div className="text-center animate-fade-in">
@@ -213,34 +248,34 @@ const AuthForm = () => {
               <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 TaskFlow
               </h1>
-              <p className="text-sm text-gray-500">Stay Organized ✨</p>
+              <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Stay Organized ✨</p>
             </div>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className={`text-2xl font-bold ${textColor} mb-2`}>
             {isLogin ? '👋 Welcome Back!' : '🎉 Join TaskFlow'}
           </h2>
-          <p className="text-gray-600">
+          <p className={isDark ? 'text-gray-300' : 'text-gray-600'}>
             {isLogin ? 'Sign in to manage your tasks' : 'Create your account to get started'}
           </p>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8 animate-scale-in">
+        <div className={`${formBg} backdrop-blur-md rounded-2xl shadow-2xl ${isDark ? 'border-gray-700/50' : 'border-white/20'} border p-8 animate-scale-in`}>
           <form onSubmit={handleSubmit} className="space-y-6">
             {!isLogin && (
               <div className="group">
-                <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="name" className={`block text-sm font-semibold ${labelColor} mb-2`}>
                   👤 Full Name
                 </label>
                 <div className="relative">
-                  <User size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                  <User size={20} className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-gray-400 group-focus-within:text-blue-500'} transition-colors`} />
                   <input
                     type="text"
                     id="name"
                     value={name}
                     onChange={(e) => handleNameChange(e.target.value)}
-                    className={`w-full pl-12 pr-4 py-4 bg-white/70 border ${
-                      errors.name ? 'border-red-500' : 'border-gray-200'
-                    } rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md`}
+                    className={`w-full pl-12 pr-4 py-4 ${inputBg} border ${
+                      errors.name ? 'border-red-500' : inputBorder
+                    } rounded-xl focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-blue-400/50 focus:border-blue-400/50' : 'focus:ring-blue-500/50 focus:border-blue-500/50'} transition-all duration-300 shadow-sm hover:shadow-md ${isDark ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'}`}
                     placeholder="Enter your full name"
                     required={!isLogin}
                     disabled={isLoading}
@@ -253,19 +288,19 @@ const AuthForm = () => {
             )}
             
             <div className="group">
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="email" className={`block text-sm font-semibold ${labelColor} mb-2`}>
                 📧 Email Address
               </label>
               <div className="relative">
-                <Mail size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                <Mail size={20} className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-gray-400 group-focus-within:text-blue-500'} transition-colors`} />
                 <input
                   type="email"
                   id="email"
                   value={email}
                   onChange={(e) => handleEmailChange(e.target.value)}
-                  className={`w-full pl-12 pr-4 py-4 bg-white/70 border ${
-                    errors.email ? 'border-red-500' : 'border-gray-200'
-                  } rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md`}
+                  className={`w-full pl-12 pr-4 py-4 ${inputBg} border ${
+                    errors.email ? 'border-red-500' : inputBorder
+                  } rounded-xl focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-blue-400/50 focus:border-blue-400/50' : 'focus:ring-blue-500/50 focus:border-blue-500/50'} transition-all duration-300 shadow-sm hover:shadow-md ${isDark ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'}`}
                   placeholder="Enter your email"
                   required
                   disabled={isLoading}
@@ -277,19 +312,19 @@ const AuthForm = () => {
             </div>
             
             <div className="group">
-              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="password" className={`block text-sm font-semibold ${labelColor} mb-2`}>
                 🔒 Password
               </label>
               <div className="relative">
-                <Lock size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                <Lock size={20} className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-gray-400 group-focus-within:text-blue-500'} transition-colors`} />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   id="password"
                   value={password}
                   onChange={(e) => handlePasswordChange(e.target.value)}
-                  className={`w-full pl-12 pr-12 py-4 bg-white/70 border ${
-                    errors.password ? 'border-red-500' : 'border-gray-200'
-                  } rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md`}
+                  className={`w-full pl-12 pr-12 py-4 ${inputBg} border ${
+                    errors.password ? 'border-red-500' : inputBorder
+                  } rounded-xl focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-blue-400/50 focus:border-blue-400/50' : 'focus:ring-blue-500/50 focus:border-blue-500/50'} transition-all duration-300 shadow-sm hover:shadow-md ${isDark ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'}`}
                   placeholder="Enter your password"
                   required
                   disabled={isLoading}
@@ -297,7 +332,7 @@ const AuthForm = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition-colors"
+                  className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 hover:text-blue-400' : 'text-gray-400 hover:text-blue-500'} transition-colors`}
                   disabled={isLoading}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -307,7 +342,7 @@ const AuthForm = () => {
                 <p className="text-red-500 text-sm mt-1">{errors.password}</p>
               )}
               {!isLogin && !errors.password && (
-                <div className="text-xs text-gray-500 mt-2 space-y-1">
+                <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} mt-2 space-y-1`}>
                   <p>Password requirements:</p>
                   <ul className="list-disc list-inside space-y-1">
                     <li>At least 8 characters long</li>
