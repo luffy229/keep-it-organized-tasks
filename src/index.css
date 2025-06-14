@@ -105,15 +105,15 @@
 /* Custom animations */
 @layer utilities {
   .animate-scale-in {
-    animation: scale-in 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    animation: scale-in 0.2s ease-out;
   }
   
   .animate-fade-in {
-    animation: fade-in 0.4s ease-out;
+    animation: fade-in 0.3s ease-out;
   }
   
   .animate-slide-up {
-    animation: slide-up 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation: slide-up 0.4s ease-out;
   }
 
   .animate-gradient {
@@ -123,34 +123,21 @@
   .animate-float {
     animation: float 3s ease-in-out infinite;
   }
-
-  .animate-wiggle {
-    animation: wiggle 0.5s ease-in-out;
-  }
-
-  .animate-bounce-in {
-    animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  }
 }
 
 @keyframes scale-in {
   0% {
     transform: scale(0);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.1);
   }
   100% {
     transform: scale(1);
-    opacity: 1;
   }
 }
 
 @keyframes fade-in {
   0% {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
   }
   100% {
     opacity: 1;
@@ -161,7 +148,7 @@
 @keyframes slide-up {
   0% {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
   100% {
     opacity: 1;
@@ -184,37 +171,6 @@
   }
   50% {
     transform: translateY(-10px);
-  }
-}
-
-@keyframes wiggle {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-5px);
-  }
-  75% {
-    transform: translateX(5px);
-  }
-}
-
-@keyframes bounce-in {
-  0% {
-    transform: scale(0.3);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 0.8;
-  }
-  70% {
-    transform: scale(0.9);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
   }
 }
 
@@ -245,27 +201,4 @@
 .parallax-bg {
   transform: translateZ(0);
   will-change: transform;
-}
-
-/* Task completion effects */
-.task-complete-effect {
-  animation: task-complete 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-@keyframes task-complete {
-  0% {
-    transform: scale(1);
-  }
-  25% {
-    transform: scale(1.05) rotate(1deg);
-  }
-  50% {
-    transform: scale(0.98) rotate(-1deg);
-  }
-  75% {
-    transform: scale(1.02) rotate(0.5deg);
-  }
-  100% {
-    transform: scale(1) rotate(0deg);
-  }
 }
