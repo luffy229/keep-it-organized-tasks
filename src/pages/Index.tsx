@@ -195,8 +195,19 @@ const Index = () => {
               <p className="mt-4 text-gray-600">Loading tasks...</p>
             </div>
           ) : filteredAndSortedTasks.length === 0 ? (
-            <div className="col-span-full text-center py-12 bg-purple-50 bg-opacity-50 rounded-lg p-8">
-              <p className="text-gray-600 text-lg">No tasks found. Create your first task!</p>
+            <div className="col-span-full text-center py-16 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl border-2 border-dashed border-blue-200">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full shadow-lg mb-6">
+                <Sparkles size={40} className="text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">No tasks yet!</h3>
+              <p className="text-gray-600 text-lg mb-6">Start organizing your life by creating your first task</p>
+              <Link 
+                to="/add-task" 
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl font-medium text-lg"
+              >
+                <Plus size={20} className="mr-2" />
+                Create Task
+              </Link>
             </div>
           ) : (
             filteredAndSortedTasks.map(task => (
@@ -216,6 +227,7 @@ const Index = () => {
       {editingTask && (
         <TaskEditModal
           task={editingTask}
+          isOpen={!!editingTask}
           onClose={() => setEditingTask(null)}
           onSave={handleSaveEdit}
         />
