@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { User, Mail, Lock, Sparkles, ArrowRight } from 'lucide-react';
@@ -9,8 +8,46 @@ const AuthForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [scrollY, setScrollY] = useState(0);
   const { login, register, isLoading } = useAuth();
   const { toast } = useToast();
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Calculate gradient based on scroll position
+  const getBackgroundStyle = () => {
+    const maxScroll = 800;
+    const scrollProgress = Math.min(scrollY / maxScroll, 1);
+    
+    const startColor1 = [199, 210, 254]; // indigo-200
+    const startColor2 = [255, 255, 255]; // white
+    const startColor3 = [243, 232, 255]; // purple-100
+    
+    const endColor1 = [147, 197, 253]; // blue-300
+    const endColor2 = [196, 181, 253]; // purple-300
+    const endColor3 = [252, 165, 165]; // red-300
+    
+    const interpolateColor = (start: number[], end: number[], progress: number) => {
+      return start.map((startVal, i) => 
+        Math.round(startVal + (end[i] - startVal) * progress)
+      );
+    };
+    
+    const color1 = interpolateColor(startColor1, endColor1, scrollProgress);
+    const color2 = interpolateColor(startColor2, endColor2, scrollProgress);
+    const color3 = interpolateColor(startColor3, endColor3, scrollProgress);
+    
+    return {
+      background: `linear-gradient(135deg, 
+        rgb(${color1.join(',')}) 0%, 
+        rgb(${color2.join(',')}) 50%, 
+        rgb(${color3.join(',')}) 100%)`
+    };
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,8 +91,8 @@ const AuthForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-purple-100/40"></div>
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 transition-all duration-300" style={getBackgroundStyle()}>
+      <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-white/20 pointer-events-none"></div>
       
       <div className="relative max-w-md w-full space-y-8">
         <div className="text-center animate-fade-in">

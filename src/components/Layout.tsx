@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { User, LogOut, Sparkles } from 'lucide-react';
@@ -11,12 +11,51 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   const location = useLocation();
   const { user, logout } = useAuth();
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Calculate gradient based on scroll position
+  const getBackgroundStyle = () => {
+    const maxScroll = 1000; // Adjust this value to control when the gradient fully transitions
+    const scrollProgress = Math.min(scrollY / maxScroll, 1);
+    
+    // Define gradient colors based on scroll position
+    const startColor1 = [199, 210, 254]; // indigo-200
+    const startColor2 = [255, 255, 255]; // white
+    const startColor3 = [243, 232, 255]; // purple-100
+    
+    const endColor1 = [147, 197, 253]; // blue-300
+    const endColor2 = [196, 181, 253]; // purple-300
+    const endColor3 = [252, 165, 165]; // red-300
+    
+    const interpolateColor = (start: number[], end: number[], progress: number) => {
+      return start.map((startVal, i) => 
+        Math.round(startVal + (end[i] - startVal) * progress)
+      );
+    };
+    
+    const color1 = interpolateColor(startColor1, endColor1, scrollProgress);
+    const color2 = interpolateColor(startColor2, endColor2, scrollProgress);
+    const color3 = interpolateColor(startColor3, endColor3, scrollProgress);
+    
+    return {
+      background: `linear-gradient(135deg, 
+        rgb(${color1.join(',')}) 0%, 
+        rgb(${color2.join(',')}) 50%, 
+        rgb(${color3.join(',')}) 100%)`
+    };
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-purple-100/40"></div>
+    <div className="min-h-screen transition-all duration-300" style={getBackgroundStyle()}>
+      <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-white/20 pointer-events-none"></div>
       
-      <header className="relative bg-white/80 backdrop-blur-md shadow-lg border-b border-white/20">
+      <header className="relative bg-white/80 backdrop-blur-md shadow-lg border-b border-white/20 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center space-x-3 group">
