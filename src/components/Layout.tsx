@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { User, LogOut, Sparkles, Menu, X } from 'lucide-react';
+import { User, LogOut, Sparkles, Menu, X, Home, Plus } from 'lucide-react';
 import { Drawer, DrawerContent, DrawerTrigger, DrawerClose } from '@/components/ui/drawer';
 import Footer from './Footer';
 import ThemeSelector from './ThemeSelector';
@@ -87,52 +87,83 @@ const Layout = ({ children }: LayoutProps) => {
   const closeDrawer = () => setIsDrawerOpen(false);
 
   const NavLinks = ({ isMobile = false, onLinkClick = () => {} }) => (
-    <div className={`flex ${isMobile ? 'flex-col space-y-4' : 'space-x-1'}`}>
+    <div className={`flex ${isMobile ? 'flex-col space-y-3' : 'space-x-1'}`}>
       <Link
         to="/"
         onClick={onLinkClick}
-        className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+        className={`group flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
           location.pathname === '/'
-            ? navItemActiveColor + ' shadow-md'
-            : navItemHoverColor + ' hover:shadow-sm'
-        } ${isMobile ? 'text-center' : ''}`}
+            ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg'
+            : `${isDark ? 'text-gray-300 hover:text-white hover:bg-gray-800/60' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'} hover:shadow-md`
+        }`}
       >
-        🏠 Home
+        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+          location.pathname === '/' 
+            ? 'bg-white/20' 
+            : `${isDark ? 'bg-gray-700' : 'bg-gray-200'} group-hover:scale-110`
+        } transition-all duration-300`}>
+          <Home size={16} className={location.pathname === '/' ? 'text-white' : ''} />
+        </div>
+        <span className="text-sm font-medium">Home</span>
       </Link>
+      
       <Link
         to="/add-task"
         onClick={onLinkClick}
-        className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+        className={`group flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
           location.pathname === '/add-task'
-            ? navItemActiveColor + ' shadow-md'
-            : navItemHoverColor + ' hover:shadow-sm'
-        } ${isMobile ? 'text-center' : ''}`}
+            ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg'
+            : `${isDark ? 'text-gray-300 hover:text-white hover:bg-gray-800/60' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'} hover:shadow-md`
+        }`}
       >
-        ➕ Add Task
+        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+          location.pathname === '/add-task' 
+            ? 'bg-white/20' 
+            : `${isDark ? 'bg-gray-700' : 'bg-gray-200'} group-hover:scale-110`
+        } transition-all duration-300`}>
+          <Plus size={16} className={location.pathname === '/add-task' ? 'text-white' : ''} />
+        </div>
+        <span className="text-sm font-medium">Add Task</span>
       </Link>
     </div>
   );
 
   const UserSection = ({ isMobile = false, onLogoutClick = () => {} }) => (
-    <div className={`flex items-center ${isMobile ? 'flex-col space-y-4' : 'space-x-4'}`}>
-      <ThemeSelector />
+    <div className={`flex flex-col space-y-4`}>
+      {/* Theme Selector */}
+      <div className="space-y-2">
+        <h4 className={`text-xs font-semibold ${isDark ? 'text-gray-400' : 'text-gray-500'} uppercase tracking-wider`}>Theme</h4>
+        <ThemeSelector />
+      </div>
+      
       {user && (
         <>
-          <div className={`flex items-center space-x-3 ${isDark ? 'bg-gray-800/60' : 'bg-white/60'} rounded-xl px-4 py-2 shadow-sm ${isMobile ? 'w-full justify-center' : ''}`}>
-            <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
-              <User size={16} className="text-white" />
+          {/* User Profile */}
+          <div className={`p-4 ${isDark ? 'bg-gray-800/60' : 'bg-gray-50'} rounded-xl border ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+            <div className="flex items-center space-x-3">
+              <div className="relative">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                  <User size={20} className="text-white" />
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'} truncate`}>{user.name}</p>
+                <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Active now</p>
+              </div>
             </div>
-            <span className={`text-sm font-medium ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>{user.name}</span>
           </div>
+          
+          {/* Logout Button */}
           <button
             onClick={() => {
               logout();
               onLogoutClick();
             }}
-            className={`p-2 ${isDark ? 'text-gray-400 hover:text-red-400 hover:bg-red-900/20' : 'text-gray-600 hover:text-red-500 hover:bg-red-50'} rounded-xl transition-all duration-200 hover:scale-110 ${isMobile ? 'mx-auto' : ''}`}
-            title="Logout"
+            className={`flex items-center justify-center space-x-3 w-full p-3 ${isDark ? 'text-red-400 hover:bg-red-900/20 border-red-800/30' : 'text-red-600 hover:bg-red-50 border-red-200'} border rounded-xl transition-all duration-200 hover:scale-[1.02] group`}
           >
-            <LogOut size={18} />
+            <LogOut size={18} className="group-hover:scale-110 transition-transform duration-200" />
+            <span className="font-medium">Sign Out</span>
           </button>
         </>
       )}
@@ -180,33 +211,42 @@ const Layout = ({ children }: LayoutProps) => {
                     <Menu size={24} />
                   </button>
                 </DrawerTrigger>
-                <DrawerContent className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}`}>
-                  <div className="p-6 space-y-6">
-                    {/* Header with close button */}
-                    <div className="flex items-center justify-between">
+                <DrawerContent className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'} max-h-[85vh]`}>
+                  <div className="flex flex-col h-full">
+                    {/* Header */}
+                    <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                          <Sparkles size={16} className="text-white" />
+                        <div className="relative">
+                          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <Sparkles size={20} className="text-white" />
+                          </div>
+                          <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
                         </div>
-                        <h2 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>TaskFlow</h2>
+                        <div>
+                          <h2 className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>TaskFlow</h2>
+                          <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Stay Organized</p>
+                        </div>
                       </div>
                       <DrawerClose asChild>
-                        <button className={`p-2 ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
+                        <button className={`p-2 ${isDark ? 'text-gray-400 hover:text-white hover:bg-gray-800' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'} rounded-lg transition-all duration-200`}>
                           <X size={20} />
                         </button>
                       </DrawerClose>
                     </div>
 
-                    {/* Navigation Links */}
-                    <div className="space-y-2">
-                      <h3 className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'} uppercase tracking-wider mb-3`}>Navigation</h3>
-                      <NavLinks isMobile onLinkClick={closeDrawer} />
-                    </div>
+                    {/* Content */}
+                    <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                      {/* Navigation Section */}
+                      <div className="space-y-3">
+                        <h3 className={`text-xs font-semibold ${isDark ? 'text-gray-400' : 'text-gray-500'} uppercase tracking-wider`}>Navigation</h3>
+                        <NavLinks isMobile onLinkClick={closeDrawer} />
+                      </div>
 
-                    {/* User Section */}
-                    <div className={`pt-4 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-                      <h3 className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'} uppercase tracking-wider mb-3`}>Account</h3>
-                      <UserSection isMobile onLogoutClick={closeDrawer} />
+                      {/* Account Section */}
+                      <div className={`pt-4 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+                        <h3 className={`text-xs font-semibold ${isDark ? 'text-gray-400' : 'text-gray-500'} uppercase tracking-wider mb-4`}>Account</h3>
+                        <UserSection isMobile onLogoutClick={closeDrawer} />
+                      </div>
                     </div>
                   </div>
                 </DrawerContent>
