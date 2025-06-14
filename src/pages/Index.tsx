@@ -195,8 +195,8 @@ const Index = () => {
               <p className="mt-4 text-gray-600">Loading tasks...</p>
             </div>
           ) : filteredAndSortedTasks.length === 0 ? (
-            <div className="col-span-full text-center py-12">
-              <p className="text-gray-600">No tasks found. Create your first task!</p>
+            <div className="col-span-full text-center py-12 bg-purple-50 bg-opacity-50 rounded-lg p-8">
+              <p className="text-gray-600 text-lg">No tasks found. Create your first task!</p>
             </div>
           ) : (
             filteredAndSortedTasks.map(task => (

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -60,7 +61,7 @@ const AuthForm = () => {
         if (!success) {
           toast({
             title: 'Login failed',
-            description: 'Invalid email or password. Try demo@example.com with password "password"',
+            description: 'Invalid email or password.',
             variant: 'destructive',
           });
         }
@@ -204,16 +205,6 @@ const AuthForm = () => {
               {isLogin ? "Don't have an account? Sign up 📝" : "Already have an account? Sign in 👋"}
             </button>
           </div>
-
-          {isLogin && (
-            <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200">
-              <p className="text-sm text-gray-700 text-center">
-                <span className="font-semibold">🎯 Demo credentials:</span><br />
-                <span className="text-blue-600">📧 demo@example.com</span><br />
-                <span className="text-purple-600">🔑 password</span>
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </div>
