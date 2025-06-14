@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Heart, Github, Twitter } from 'lucide-react';
+import { Heart, Github, Twitter, Linkedin } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -10,28 +10,32 @@ const Footer = () => {
           <div className="flex items-center space-x-2 text-gray-600">
             <span>Made with</span>
             <Heart size={16} className="text-red-500" />
-            <span>using TaskFlow</span>
+            <span>Pratik</span>
           </div>
           
           <div className="flex space-x-6">
             <a
-              href="#"
+              href="https://github.com/luffy229"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
               aria-label="GitHub"
             >
               <Github size={20} />
             </a>
             <a
-              href="#"
+              href="https://www.linkedin.com/in/pratik-22917-pal/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
-              aria-label="Twitter"
+              aria-label="GitHub"
             >
-              <Twitter size={20} />
+              <Linkedin size={20} />
             </a>
           </div>
           
           <p className="text-sm text-gray-500 text-center">
-            © 2024 TaskFlow. Stay organized, stay productive.
+            © 2025 TaskFlow. Stay organized, stay productive.
           </p>
         </div>
       </div>
