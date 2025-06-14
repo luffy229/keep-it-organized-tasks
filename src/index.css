@@ -102,42 +102,60 @@
   }
 }
 
-/* Custom animations */
+/* Enhanced animations with wow effects */
 @layer utilities {
   .animate-scale-in {
-    animation: scale-in 0.2s ease-out;
+    animation: scale-in 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
   
   .animate-fade-in {
-    animation: fade-in 0.3s ease-out;
+    animation: fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   }
   
   .animate-slide-up {
-    animation: slide-up 0.4s ease-out;
+    animation: slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .animate-gradient {
-    animation: gradient-shift 4s ease-in-out infinite;
+    animation: gradient-shift 6s ease-in-out infinite;
+    background-size: 300% 300%;
   }
 
   .animate-float {
-    animation: float 3s ease-in-out infinite;
+    animation: float 4s ease-in-out infinite;
+  }
+
+  .animate-bounce-slow {
+    animation: bounce-slow 3s ease-in-out infinite;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse-slow 3s ease-in-out infinite;
+  }
+
+  .animate-spin-slow {
+    animation: spin 8s linear infinite;
   }
 }
 
 @keyframes scale-in {
   0% {
-    transform: scale(0);
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
   }
   100% {
     transform: scale(1);
+    opacity: 1;
   }
 }
 
 @keyframes fade-in {
   0% {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(30px);
   }
   100% {
     opacity: 1;
@@ -148,11 +166,11 @@
 @keyframes slide-up {
   0% {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(40px) scale(0.95);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -167,38 +185,73 @@
 
 @keyframes float {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-10px) rotate(2deg);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-15px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-5px) rotate(-2deg);
+  }
+}
+
+@keyframes bounce-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
   }
 }
 
 /* Glass effect utilities */
 .glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .glass-dark {
-  background: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-/* Scroll-based background effects */
+/* Enhanced scroll-based background effects */
 .scroll-gradient {
   background: linear-gradient(135deg, 
     rgb(199, 210, 254) 0%, 
     rgb(255, 255, 255) 50%, 
     rgb(243, 232, 255) 100%);
   background-size: 400% 400%;
-  transition: background 0.3s ease;
+  transition: background 0.5s ease;
 }
 
 /* Parallax effect for background elements */
 .parallax-bg {
   transform: translateZ(0);
   will-change: transform;
+}
+
+/* Additional wow effects */
+.shadow-3xl {
+  box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
+}
+
+.border-gradient-to-r {
+  border-image: linear-gradient(to right, #3b82f6, #8b5cf6) 1;
 }
