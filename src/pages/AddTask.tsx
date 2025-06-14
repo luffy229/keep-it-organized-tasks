@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Sparkles, Target } from 'lucide-react';
@@ -211,7 +210,7 @@ const AddTask = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col space-y-3 sm:flex-row sm:justify-end sm:space-y-0 sm:space-x-4 pt-4 sm:pt-6 border-t border-gray-200/50">
+              <div className="flex flex-col space-y-3 sm:flex-row sm:justify-end sm:space-y-0 sm:space-x-4 pt-6 sm:pt-8 mt-8 border-t border-gray-200/50">
                 <button
                   type="button"
                   onClick={() => navigate('/')}
