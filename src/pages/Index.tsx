@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Sparkles, Star } from 'lucide-react';
@@ -242,69 +241,71 @@ const Index = () => {
           />
         </div>
 
-        {/* Tasks List with mobile-optimized spacing */}
-        <div className="space-y-3 sm:space-y-4">
-          {isLoading ? (
-            <div className="text-center py-8 sm:py-12">
-              <div className="relative">
-                <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-4 border-blue-200 border-t-blue-600 mx-auto"></div>
-                <div className="absolute inset-0 animate-ping rounded-full h-12 w-12 sm:h-16 sm:w-16 border-2 border-blue-400 opacity-75 mx-auto"></div>
+        {/* Tasks List with mobile-optimized spacing and narrower width on mobile */}
+        <div className="max-w-sm sm:max-w-full mx-auto">
+          <div className="space-y-3 sm:space-y-4">
+            {isLoading ? (
+              <div className="text-center py-8 sm:py-12">
+                <div className="relative">
+                  <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-4 border-blue-200 border-t-blue-600 mx-auto"></div>
+                  <div className="absolute inset-0 animate-ping rounded-full h-12 w-12 sm:h-16 sm:w-16 border-2 border-blue-400 opacity-75 mx-auto"></div>
+                </div>
+                <p className="mt-4 sm:mt-6 text-gray-600 text-base sm:text-lg animate-pulse">Loading your amazing tasks...</p>
               </div>
-              <p className="mt-4 sm:mt-6 text-gray-600 text-base sm:text-lg animate-pulse">Loading your amazing tasks...</p>
-            </div>
-          ) : filteredAndSortedTasks.length === 0 ? (
-            <div className="text-center py-8 sm:py-12 md:py-16 bg-gradient-to-br from-blue-50 via-white to-purple-50 rounded-2xl sm:rounded-3xl border-2 border-dashed border-gradient-to-r border-blue-200 relative overflow-hidden animate-fade-in mx-2 sm:mx-0">
-              {/* Background Pattern - hidden on small screens */}
-              <div className="absolute inset-0 opacity-5 hidden sm:block">
-                <div className="absolute top-10 left-10 w-16 h-16 md:w-20 md:h-20 bg-blue-500 rounded-full animate-pulse"></div>
-                <div className="absolute top-20 right-20 w-12 h-12 md:w-16 md:h-16 bg-purple-500 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
-                <div className="absolute bottom-20 left-20 w-8 h-8 md:w-12 md:h-12 bg-pink-500 rounded-full animate-pulse" style={{ animationDelay: '2s' }}></div>
-              </div>
-              
-              <div className="relative z-10 px-4">
-                <div className="relative inline-block mb-4 sm:mb-6 md:mb-8">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 rounded-full flex items-center justify-center shadow-2xl animate-bounce">
-                    <Sparkles size={32} className="sm:w-10 sm:h-10 md:w-12 md:h-12 text-white" />
+            ) : filteredAndSortedTasks.length === 0 ? (
+              <div className="text-center py-8 sm:py-12 md:py-16 bg-gradient-to-br from-blue-50 via-white to-purple-50 rounded-2xl sm:rounded-3xl border-2 border-dashed border-gradient-to-r border-blue-200 relative overflow-hidden animate-fade-in">
+                {/* Background Pattern - hidden on small screens */}
+                <div className="absolute inset-0 opacity-5 hidden sm:block">
+                  <div className="absolute top-10 left-10 w-16 h-16 md:w-20 md:h-20 bg-blue-500 rounded-full animate-pulse"></div>
+                  <div className="absolute top-20 right-20 w-12 h-12 md:w-16 md:h-16 bg-purple-500 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
+                  <div className="absolute bottom-20 left-20 w-8 h-8 md:w-12 md:h-12 bg-pink-500 rounded-full animate-pulse" style={{ animationDelay: '2s' }}></div>
+                </div>
+                
+                <div className="relative z-10 px-4">
+                  <div className="relative inline-block mb-4 sm:mb-6 md:mb-8">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 rounded-full flex items-center justify-center shadow-2xl animate-bounce">
+                      <Sparkles size={32} className="sm:w-10 sm:h-10 md:w-12 md:h-12 text-white" />
+                    </div>
+                    <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-6 sm:h-6 md:w-8 md:h-8 bg-yellow-400 rounded-full animate-ping"></div>
                   </div>
-                  <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-6 sm:h-6 md:w-8 md:h-8 bg-yellow-400 rounded-full animate-ping"></div>
+                  
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-gray-800 to-purple-600 bg-clip-text text-transparent mb-2 sm:mb-3 md:mb-4">
+                    Ready to Get Things Done? 🚀
+                  </h3>
+                  <p className="text-gray-600 text-sm sm:text-base md:text-xl mb-4 sm:mb-6 md:mb-8 max-w-sm md:max-w-md mx-auto">
+                    Your productivity journey starts with your first task. Let's make it happen!
+                  </p>
+                  
+                  <Link 
+                    to="/add-task" 
+                    className="group inline-flex items-center px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 text-white rounded-xl sm:rounded-2xl hover:from-blue-600 hover:via-purple-700 hover:to-pink-600 transition-all duration-300 shadow-2xl hover:shadow-3xl font-semibold text-sm sm:text-base md:text-lg transform hover:scale-105 hover:-translate-y-1"
+                  >
+                    <Plus size={16} className="sm:w-5 sm:h-5 md:w-6 md:h-6 mr-2 sm:mr-3 group-hover:rotate-90 transition-transform duration-300" />
+                    <span className="hidden sm:inline">Create Your First Task</span>
+                    <span className="sm:hidden">Add Task</span>
+                    <div className="ml-2 sm:ml-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">✨</div>
+                  </Link>
                 </div>
-                
-                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-gray-800 to-purple-600 bg-clip-text text-transparent mb-2 sm:mb-3 md:mb-4">
-                  Ready to Get Things Done? 🚀
-                </h3>
-                <p className="text-gray-600 text-sm sm:text-base md:text-xl mb-4 sm:mb-6 md:mb-8 max-w-sm md:max-w-md mx-auto">
-                  Your productivity journey starts with your first task. Let's make it happen!
-                </p>
-                
-                <Link 
-                  to="/add-task" 
-                  className="group inline-flex items-center px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 text-white rounded-xl sm:rounded-2xl hover:from-blue-600 hover:via-purple-700 hover:to-pink-600 transition-all duration-300 shadow-2xl hover:shadow-3xl font-semibold text-sm sm:text-base md:text-lg transform hover:scale-105 hover:-translate-y-1"
-                >
-                  <Plus size={16} className="sm:w-5 sm:h-5 md:w-6 md:h-6 mr-2 sm:mr-3 group-hover:rotate-90 transition-transform duration-300" />
-                  <span className="hidden sm:inline">Create Your First Task</span>
-                  <span className="sm:hidden">Add Task</span>
-                  <div className="ml-2 sm:ml-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">✨</div>
-                </Link>
               </div>
-            </div>
-          ) : (
-            <div className="grid gap-3 sm:gap-4">
-              {filteredAndSortedTasks.map((task, index) => (
-                <div
-                  key={task.id}
-                  className="animate-slide-up"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <TaskCard
-                    task={task}
-                    onToggleStatus={handleToggleStatus}
-                    onDelete={handleDelete}
-                    onEdit={handleEdit}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
+            ) : (
+              <div className="grid gap-3 sm:gap-4">
+                {filteredAndSortedTasks.map((task, index) => (
+                  <div
+                    key={task.id}
+                    className="animate-slide-up"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <TaskCard
+                      task={task}
+                      onToggleStatus={handleToggleStatus}
+                      onDelete={handleDelete}
+                      onEdit={handleEdit}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
