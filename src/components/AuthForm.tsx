@@ -228,46 +228,46 @@ const AuthForm = () => {
   const labelColor = isDark ? 'text-gray-200' : 'text-gray-700';
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-6 transition-all duration-300" style={getBackgroundStyle()}>
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 transition-all duration-300" style={getBackgroundStyle()}>
       <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-br from-black/20 via-transparent to-black/10' : 'bg-gradient-to-br from-white/30 via-transparent to-white/20'} pointer-events-none`}></div>
       
       <div className="absolute top-4 right-4 z-50">
         <ThemeSelector />
       </div>
       
-      <div className="relative w-full max-w-md space-y-6">
+      <div className="relative max-w-md w-full space-y-8">
         <div className="text-center animate-fade-in">
           <div className="flex items-center justify-center space-x-3 mb-6">
             <div className="relative">
-              <div className="w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
-                <Sparkles size={28} className="text-white" />
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
+                <Sparkles size={32} className="text-white" />
               </div>
               <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-pulse"></div>
             </div>
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 TaskFlow
               </h1>
               <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Stay Organized ✨</p>
             </div>
           </div>
-          <h2 className={`text-xl md:text-2xl font-bold ${textColor} mb-2`}>
+          <h2 className={`text-2xl font-bold ${textColor} mb-2`}>
             {isLogin ? '👋 Welcome Back!' : '🎉 Join TaskFlow'}
           </h2>
-          <p className={`${isDark ? 'text-gray-300' : 'text-gray-600'} text-sm px-2`}>
+          <p className={isDark ? 'text-gray-300' : 'text-gray-600'}>
             {isLogin ? 'Sign in to manage your tasks' : 'Create your account to get started'}
           </p>
         </div>
 
-        <div className={`${formBg} backdrop-blur-md rounded-2xl shadow-2xl ${isDark ? 'border-gray-700/50' : 'border-white/20'} border p-6 md:p-8 animate-scale-in`}>
-          <form onSubmit={handleSubmit} className="space-y-5">
+        <div className={`${formBg} backdrop-blur-md rounded-2xl shadow-2xl ${isDark ? 'border-gray-700/50' : 'border-white/20'} border p-8 animate-scale-in`}>
+          <form onSubmit={handleSubmit} className="space-y-6">
             {!isLogin && (
               <div className="group">
                 <label htmlFor="name" className={`block text-sm font-semibold ${labelColor} mb-2`}>
                   👤 Full Name
                 </label>
                 <div className="relative">
-                  <User size={18} className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-gray-400 group-focus-within:text-blue-500'} transition-colors`} />
+                  <User size={20} className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-gray-400 group-focus-within:text-blue-500'} transition-colors`} />
                   <input
                     type="text"
                     id="name"
@@ -275,14 +275,14 @@ const AuthForm = () => {
                     onChange={(e) => handleNameChange(e.target.value)}
                     className={`w-full pl-12 pr-4 py-4 ${inputBg} border ${
                       errors.name ? 'border-red-500' : inputBorder
-                    } rounded-xl focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-blue-400/50 focus:border-blue-400/50' : 'focus:ring-blue-500/50 focus:border-blue-500/50'} transition-all duration-300 shadow-sm hover:shadow-md ${isDark ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'} text-base`}
+                    } rounded-xl focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-blue-400/50 focus:border-blue-400/50' : 'focus:ring-blue-500/50 focus:border-blue-500/50'} transition-all duration-300 shadow-sm hover:shadow-md ${isDark ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'}`}
                     placeholder="Enter your full name"
                     required={!isLogin}
                     disabled={isLoading}
                   />
                 </div>
                 {errors.name && (
-                  <p className="text-red-500 text-sm mt-2">{errors.name}</p>
+                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
                 )}
               </div>
             )}
@@ -292,7 +292,7 @@ const AuthForm = () => {
                 📧 Email Address
               </label>
               <div className="relative">
-                <Mail size={18} className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-gray-400 group-focus-within:text-blue-500'} transition-colors`} />
+                <Mail size={20} className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-gray-400 group-focus-within:text-blue-500'} transition-colors`} />
                 <input
                   type="email"
                   id="email"
@@ -300,14 +300,14 @@ const AuthForm = () => {
                   onChange={(e) => handleEmailChange(e.target.value)}
                   className={`w-full pl-12 pr-4 py-4 ${inputBg} border ${
                     errors.email ? 'border-red-500' : inputBorder
-                  } rounded-xl focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-blue-400/50 focus:border-blue-400/50' : 'focus:ring-blue-500/50 focus:border-blue-500/50'} transition-all duration-300 shadow-sm hover:shadow-md ${isDark ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'} text-base`}
+                  } rounded-xl focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-blue-400/50 focus:border-blue-400/50' : 'focus:ring-blue-500/50 focus:border-blue-500/50'} transition-all duration-300 shadow-sm hover:shadow-md ${isDark ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'}`}
                   placeholder="Enter your email"
                   required
                   disabled={isLoading}
                 />
               </div>
               {errors.email && (
-                <p className="text-red-500 text-sm mt-2">{errors.email}</p>
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
               )}
             </div>
             
@@ -316,7 +316,7 @@ const AuthForm = () => {
                 🔒 Password
               </label>
               <div className="relative">
-                <Lock size={18} className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-gray-400 group-focus-within:text-blue-500'} transition-colors`} />
+                <Lock size={20} className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 group-focus-within:text-blue-400' : 'text-gray-400 group-focus-within:text-blue-500'} transition-colors`} />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   id="password"
@@ -324,7 +324,7 @@ const AuthForm = () => {
                   onChange={(e) => handlePasswordChange(e.target.value)}
                   className={`w-full pl-12 pr-12 py-4 ${inputBg} border ${
                     errors.password ? 'border-red-500' : inputBorder
-                  } rounded-xl focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-blue-400/50 focus:border-blue-400/50' : 'focus:ring-blue-500/50 focus:border-blue-500/50'} transition-all duration-300 shadow-sm hover:shadow-md ${isDark ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'} text-base`}
+                  } rounded-xl focus:outline-none focus:ring-2 ${isDark ? 'focus:ring-blue-400/50 focus:border-blue-400/50' : 'focus:ring-blue-500/50 focus:border-blue-500/50'} transition-all duration-300 shadow-sm hover:shadow-md ${isDark ? 'text-white placeholder-gray-400' : 'text-gray-900 placeholder-gray-500'}`}
                   placeholder="Enter your password"
                   required
                   disabled={isLoading}
@@ -332,19 +332,19 @@ const AuthForm = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 hover:text-blue-400' : 'text-gray-400 hover:text-blue-500'} transition-colors p-1`}
+                  className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 hover:text-blue-400' : 'text-gray-400 hover:text-blue-500'} transition-colors`}
                   disabled={isLoading}
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
               {errors.password && (
-                <p className="text-red-500 text-sm mt-2">{errors.password}</p>
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
               )}
               {!isLogin && !errors.password && (
-                <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} mt-3 space-y-1`}>
-                  <p className="font-medium">Password requirements:</p>
-                  <ul className="list-disc list-inside space-y-1 text-xs leading-relaxed">
+                <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} mt-2 space-y-1`}>
+                  <p>Password requirements:</p>
+                  <ul className="list-disc list-inside space-y-1">
                     <li>At least 8 characters long</li>
                     <li>One uppercase letter (A-Z)</li>
                     <li>One lowercase letter (a-z)</li>
@@ -355,22 +355,20 @@ const AuthForm = () => {
               )}
             </div>
 
-            <div className="pt-3">
-              <button
-                type="submit"
-                disabled={isLoading || Object.values(errors).some(error => error !== null)}
-                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-6 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl font-semibold flex items-center justify-center space-x-2 transform hover:scale-[1.02] text-base min-h-[3.5rem]"
-              >
-                {isLoading ? (
-                  <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                ) : (
-                  <>
-                    <span>{isLogin ? '🚀 Sign In' : '✨ Create Account'}</span>
-                    <ArrowRight size={20} />
-                  </>
-                )}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={isLoading || Object.values(errors).some(error => error !== null)}
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 px-6 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl font-semibold flex items-center justify-center space-x-2 transform hover:scale-105"
+            >
+              {isLoading ? (
+                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  <span>{isLogin ? '🚀 Sign In' : '✨ Create Account'}</span>
+                  <ArrowRight size={20} />
+                </>
+              )}
+            </button>
           </form>
 
           <div className="mt-6 text-center">
@@ -379,7 +377,7 @@ const AuthForm = () => {
                 setIsLogin(!isLogin);
                 setErrors({});
               }}
-              className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors hover:underline py-2 px-4 rounded-lg"
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors hover:underline"
               disabled={isLoading}
             >
               {isLogin ? "Don't have an account? Sign up 📝" : "Already have an account? Sign in 👋"}

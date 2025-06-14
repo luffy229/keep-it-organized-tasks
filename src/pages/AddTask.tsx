@@ -106,42 +106,42 @@ const AddTask = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-white/20 pointer-events-none"></div>
       
       <Layout>
-        <div className="max-w-md mx-auto px-4 py-6 md:max-w-2xl md:px-8">
-          <div className="mb-6 animate-fade-in">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-8 animate-fade-in">
             <button
               onClick={() => navigate('/')}
-              className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-all duration-200 mb-4 group hover:scale-105"
+              className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-all duration-200 mb-6 group hover:scale-105"
             >
-              <ArrowLeft size={18} className="mr-2 group-hover:-translate-x-1 transition-transform" />
-              <span className="font-medium text-sm">Back to Tasks</span>
+              <ArrowLeft size={20} className="mr-2 group-hover:-translate-x-1 transition-transform" />
+              <span className="font-medium">Back to Tasks</span>
             </button>
             
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-r from-green-400 to-blue-500 rounded-2xl shadow-lg mb-4">
-                <Plus size={28} className="text-white" />
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-400 to-blue-500 rounded-2xl shadow-lg mb-4">
+                <Plus size={32} className="text-white" />
               </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-2">
+              <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-2">
                 ✨ Create New Task
               </h1>
-              <p className="text-gray-600 text-sm px-2">Add a new task to stay organized and productive</p>
+              <p className="text-gray-600 text-lg">Add a new task to stay organized and productive</p>
             </div>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 p-6 animate-scale-in">
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-6 sm:p-8 animate-scale-in">
+            <form onSubmit={handleSubmit} className="space-y-8">
               <div className="group">
                 <label htmlFor="taskName" className="block text-sm font-semibold text-gray-700 mb-3">
                   🎯 Task Name *
                 </label>
                 <div className="relative">
-                  <Target size={18} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                  <Target size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                   <input
                     type="text"
                     id="taskName"
                     value={taskName}
                     onChange={(e) => setTaskName(e.target.value)}
                     placeholder="What needs to be done? ✨"
-                    className="w-full pl-12 pr-4 py-4 bg-white/80 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md text-gray-800 placeholder-gray-500 text-base"
+                    className="w-full pl-12 pr-4 py-4 bg-white/70 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md text-gray-800 placeholder-gray-500"
                     disabled={isSubmitting}
                   />
                 </div>
@@ -151,8 +151,8 @@ const AddTask = () => {
                 <label className="block text-sm font-semibold text-gray-700 mb-4">
                   📊 Initial Status
                 </label>
-                <div className="space-y-3">
-                  <label className="relative cursor-pointer group block">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <label className="relative cursor-pointer group">
                     <input
                       type="radio"
                       value="incomplete"
@@ -172,7 +172,7 @@ const AddTask = () => {
                         }`}>
                           {status === 'incomplete' && <div className="w-2 h-2 bg-white rounded-full"></div>}
                         </div>
-                        <div className="flex-1">
+                        <div>
                           <p className="font-medium text-gray-800">⏳ Incomplete</p>
                           <p className="text-sm text-gray-600">Task is pending completion</p>
                         </div>
@@ -180,7 +180,7 @@ const AddTask = () => {
                     </div>
                   </label>
                   
-                  <label className="relative cursor-pointer group block">
+                  <label className="relative cursor-pointer group">
                     <input
                       type="radio"
                       value="complete"
@@ -200,7 +200,7 @@ const AddTask = () => {
                         }`}>
                           {status === 'complete' && <div className="w-2 h-2 bg-white rounded-full"></div>}
                         </div>
-                        <div className="flex-1">
+                        <div>
                           <p className="font-medium text-gray-800">✅ Complete</p>
                           <p className="text-sm text-gray-600">Task is already done</p>
                         </div>
@@ -210,11 +210,19 @@ const AddTask = () => {
                 </div>
               </div>
 
-              <div className="space-y-3 pt-6 border-t border-gray-200/50">
+              <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-6 border-t border-gray-200/50">
+                <button
+                  type="button"
+                  onClick={() => navigate('/')}
+                  className="px-6 py-3 text-gray-700 bg-white/70 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-200 font-medium order-2 sm:order-1"
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || !taskName.trim()}
-                  className="w-full inline-flex items-center justify-center px-6 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl font-semibold transform hover:scale-105"
+                  className="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl font-semibold transform hover:scale-105 order-1 sm:order-2"
                 >
                   {isSubmitting ? (
                     <>
@@ -227,15 +235,6 @@ const AddTask = () => {
                       Create Task
                     </>
                   )}
-                </button>
-                
-                <button
-                  type="button"
-                  onClick={() => navigate('/')}
-                  className="w-full px-4 py-3 text-gray-700 bg-white/70 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all duration-200 font-medium"
-                  disabled={isSubmitting}
-                >
-                  Cancel
                 </button>
               </div>
             </form>
