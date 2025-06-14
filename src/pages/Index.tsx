@@ -187,15 +187,15 @@ const Index = () => {
           />
         </div>
 
-        {/* Tasks Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Tasks List - Changed from grid to single column */}
+        <div className="space-y-4">
           {isLoading ? (
-            <div className="col-span-full text-center py-12">
+            <div className="text-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
               <p className="mt-4 text-gray-600">Loading tasks...</p>
             </div>
           ) : filteredAndSortedTasks.length === 0 ? (
-            <div className="col-span-full text-center py-16 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl border-2 border-dashed border-blue-200">
+            <div className="text-center py-16 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl border-2 border-dashed border-blue-200">
               <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full shadow-lg mb-6">
                 <Sparkles size={40} className="text-white" />
               </div>
