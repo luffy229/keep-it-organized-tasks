@@ -2,6 +2,13 @@
 import React from 'react';
 import { Search, Filter, ArrowUpDown } from 'lucide-react';
 import { TaskStatus, SortBy, SortOrder } from '@/types/Task';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface TaskFilterProps {
   currentFilter: TaskStatus;
@@ -90,19 +97,26 @@ const TaskFilter = ({
               <span className="text-sm text-gray-600 font-medium">Sort:</span>
             </div>
             <div className="flex space-x-3">
-              <select
-                value={sortBy}
-                onChange={(e) => onSortByChange(e.target.value as SortBy)}
-                className="flex-1 px-4 py-3 lg:px-3 lg:py-2 bg-white/80 border border-gray-200 rounded-xl lg:rounded-xl text-sm lg:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 shadow-sm"
-              >
-                <option value="name">📝 Name</option>
-                <option value="status">🎯 Status</option>
-                <option value="createdAt">📅 Date</option>
-              </select>
+              <Select value={sortBy} onValueChange={(value: SortBy) => onSortByChange(value)}>
+                <SelectTrigger className="flex-1 px-4 py-3 lg:px-3 lg:py-2 bg-white/80 border border-gray-200 rounded-xl lg:rounded-xl text-sm lg:text-sm shadow-sm h-12 lg:h-10">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-white border border-gray-200 rounded-xl shadow-lg z-50">
+                  <SelectItem value="name" className="px-4 py-3 text-sm hover:bg-gray-50 cursor-pointer">
+                    📝 Name
+                  </SelectItem>
+                  <SelectItem value="status" className="px-4 py-3 text-sm hover:bg-gray-50 cursor-pointer">
+                    🎯 Status
+                  </SelectItem>
+                  <SelectItem value="createdAt" className="px-4 py-3 text-sm hover:bg-gray-50 cursor-pointer">
+                    📅 Date
+                  </SelectItem>
+                </SelectContent>
+              </Select>
               
               <button
                 onClick={() => onSortOrderChange(sortOrder === 'asc' ? 'desc' : 'asc')}
-                className="px-4 py-3 lg:px-3 lg:py-2 bg-white/80 border border-gray-200 rounded-xl lg:rounded-xl text-sm lg:text-sm hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md"
+                className="px-4 py-3 lg:px-3 lg:py-2 bg-white/80 border border-gray-200 rounded-xl lg:rounded-xl text-sm lg:text-sm hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md h-12 lg:h-10 flex items-center justify-center min-w-[48px]"
               >
                 {sortOrder === 'asc' ? '⬆️' : '⬇️'}
               </button>
