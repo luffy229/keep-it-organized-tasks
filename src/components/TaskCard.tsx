@@ -24,7 +24,7 @@ const TaskCard = ({ task, onToggleStatus, onDelete, onEdit }: TaskCardProps) => 
           </button>
           
           <div className="flex-1">
-            <h3 className="text-lg font-medium text-gray-800">
+            <h3 className={`text-lg font-medium text-gray-800 ${task.status === 'complete' ? 'line-through text-gray-500' : ''}`}>
               {task.name}
             </h3>
             <p className="text-sm text-blue-500 mt-1 flex items-center">
